@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMYU Scholar - Support & FAQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+            --primary-color: #1a7a3c;
+            --primary-light: #2a9c4a;
+            --primary-dark: #0f5a2a;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        body {
+            background: #f4f6f9;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ---------- SIDEBAR ---------- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .sidebar-logo {
+            text-align: center;
+            padding: 10px 0 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .sidebar-logo img {
+            max-height: 50px;
+            width: auto;
+        }
+        .sidebar-logo .site-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-user {
+            padding: 20px 20px 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar-user:hover {
+            background: #f8f9fa;
+        }
+        .sidebar-user .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e9ecef;
+            border: 2px solid var(--primary-color);
+        }
+        .sidebar-user .user-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar-user .user-info .name {
+            font-weight: 600;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-user .user-info .email {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 15px 0;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 24px;
+            color: #333;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover {
+            background: #f1f3f5;
+            border-left-color: var(--primary-color);
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #495057;
+        }
+        .sidebar-nav a.active {
+            background: #e9ecef;
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .sidebar-nav a.hidden-tab {
+            display: none;
+        }
+        .sidebar-bottom {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        .sidebar-bottom a {
+            display: block;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        .sidebar-bottom a:hover {
+            color: var(--primary-color);
+        }
+        .logout-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+        .drawer-overlay.active {
+            display: block;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- MOBILE HEADER ---------- */
+        .mobile-header {
+            display: none;
+            background: white;
+            padding: 14px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-header .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        .mobile-header .mobile-ai-link {
+            font-size: 28px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .mobile-header .mobile-ai-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* ---------- PAGE CONTENT ---------- */
+        .page-content {
+            padding: 30px 30px 40px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            position: relative;
+        }
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header .header-left h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header .header-left h1 i {
+            font-size: 28px;
+        }
+        .page-header .header-left p {
+            color: #6c757d;
+            font-size: 15px;
+            margin-top: 4px;
+        }
+
+        /* ---------- FAQ SECTION ---------- */
+        .faq-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        .faq-section .section-title {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .faq-section .section-title i {
+            font-size: 20px;
+        }
+
+        .faq-item {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .faq-item:hover {
+            border-color: var(--primary-color);
+        }
+        .faq-item .faq-question {
+            width: 100%;
+            padding: 16px 20px;
+            background: none;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: left;
+        }
+        .faq-item .faq-question:hover {
+            background: #f8f9fa;
+        }
+        .faq-item .faq-question .icon {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-right: 12px;
+        }
+        .faq-item .faq-question .toggle-icon {
+            font-size: 18px;
+            color: #6c757d;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .faq-item.open .faq-question .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .faq-item .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 20px;
+            color: #495057;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            padding: 0 20px 20px 20px;
+        }
+        .faq-item .faq-answer ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+        .faq-item .faq-answer ul li {
+            margin-bottom: 4px;
+        }
+        .faq-item .faq-answer strong {
+            color: var(--primary-color);
+        }
+
+        /* ---------- CONTACT SECTION ---------- */
+        .contact-section {
+            background: #fafffe;
+            border-radius: 16px;
+            padding: 24px 32px;
+            border: 2px solid var(--primary-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .contact-section .text {
+            flex: 1;
+        }
+        .contact-section .text h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+        .contact-section .text p {
+            color: #495057;
+            font-size: 14px;
+            margin: 0;
+        }
+        .contact-section .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .contact-section .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 99999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            font-size: 16px;
+            animation: popIn 0.3s ease;
+            display: none;
+        }
+        .toast-notification.show {
+            display: block;
+        }
+        .toast-notification.error {
+            background: #dc3545;
+        }
+        .toast-notification.info {
+            background: #0d6efd;
+        }
+        @keyframes popIn {
+            from { transform: translateX(-50%) scale(0.9); opacity: 0; }
+            to { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        /* ---------- CUSTOM CONFIRM ---------- */
+        .custom-confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-confirm-overlay.active {
+            display: flex;
+        }
+        .custom-confirm-box {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            padding: 35px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+        .custom-confirm-box .icon {
+            font-size: 48px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .custom-confirm-box h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .custom-confirm-box p {
+            color: #495057;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .custom-confirm-box .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .custom-confirm-box .btn-group button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .custom-confirm-box .btn-group .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .custom-confirm-box .btn-group .btn-cancel:hover {
+            background: #dee2e6;
+        }
+        .custom-confirm-box .btn-group .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .custom-confirm-box .btn-group .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-collapsed);
+                padding: 15px 0;
+            }
+            .sidebar .sidebar-logo img { max-height: 35px; }
+            .sidebar .sidebar-logo .site-name { display: none; }
+            .sidebar .sidebar-user .user-info { display: none; }
+            .sidebar .sidebar-user { justify-content: center; padding: 15px 0; }
+            .sidebar .sidebar-user .avatar-img { width: 40px; height: 40px; }
+            .sidebar-nav a { padding: 14px 0; justify-content: center; }
+            .sidebar-nav a span { display: none; }
+            .sidebar-nav a i { font-size: 22px; margin: 0; }
+            .sidebar-bottom a { text-align: center; font-size: 11px; }
+            .logout-btn { font-size: 12px; }
+            .main-content { margin-left: var(--sidebar-collapsed); }
+            .faq-section { padding: 24px 20px; }
+            .page-header .header-left h1 { font-size: 24px; }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-header {
+                display: flex;
+            }
+            .page-content {
+                padding: 16px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .page-header .header-left h1 {
+                font-size: 22px;
+            }
+            .faq-section {
+                padding: 20px 16px;
+            }
+            .faq-item .faq-question {
+                font-size: 15px;
+                padding: 14px 16px;
+            }
+            .faq-item.open .faq-answer {
+                padding: 0 16px 16px 16px;
+            }
+            .contact-section {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            .contact-section .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .toast-notification {
+                bottom: 20px;
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 90%;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .drawer-overlay { display: none !important; }
+            .mobile-header { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <img src="logo.png" alt="UMYU Scholar Logo">
+            <div class="site-name">UMYU Scholar</div>
+        </div>
+        <a href="auth.html" class="sidebar-user" id="sidebarUser">
+            <img src="https://ui-avatars.com/api/?name=Guest&background=1a7a3c&color=fff&size=48" alt="Avatar" class="avatar-img" id="userAvatar">
+            <div class="user-info">
+                <div class="name" id="userDisplayName">Guest</div>
+                <div class="email" id="userDisplayEmail">Not signed in</div>
+            </div>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="profile.html" id="profileLink" class="hidden-tab"><i class="fas fa-user"></i><span>My Profile</span></a>
+            <a href="library.html" id="libraryLink" class="hidden-tab"><i class="fas fa-bookmark"></i><span>My Library</span></a>
+            <a href="upload.html" id="uploadLink" class="hidden-tab"><i class="fas fa-upload"></i><span>Upload</span></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i><span>About</span></a>
+            <a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            <a href="support.html" class="active"><i class="fas fa-question-circle"></i><span>Support</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+            <a href="terms.html"><i class="fas fa-file-contract"></i> Terms of Use</a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- OVERLAY -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- MOBILE HEADER -->
+        <header class="mobile-header">
+            <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+            <!-- Replaced logo with AI support icon -->
+            <a href="/ai/ai.html" class="mobile-ai-link"><i class="fas fa-headset"></i></a>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content" id="pageContent">
+
+            <!-- Header (AI link removed) -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h1><i class="fas fa-question-circle" style="color:var(--primary-color);"></i> Support & FAQ</h1>
+                    <p>Get help with UMYU Scholar. Browse frequently asked questions below.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <div class="section-title"><i class="fas fa-list"></i> Frequently Asked Questions</div>
+
+                <!-- FAQ Item 1 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-user-graduate"></i></span> Who can upload papers?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Only <strong>UMYU students and staff</strong> with verified <strong>@umyu.edu.ng</strong> (staff) or <strong>@students.umyu.edu.ng</strong> (student) email addresses can upload papers. Guests can browse and download papers freely.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-upload"></i></span> How do I upload a paper?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <ol>
+                            <li>Sign in with your UMYU email address.</li>
+                            <li>Go to the <strong>Upload</strong> page from the sidebar.</li>
+                            <li>Fill in all required fields (title, authors, department, year, keywords, abstract, contact info).</li>
+                            <li>Upload your <strong>PDF</strong> file (max 10MB).</li>
+                            <li>Optionally upload a <strong>ZIP/RAR/7z</strong> file for software (max 50MB).</li>
+                            <li>Click <strong>"Upload Paper"</strong>.</li>
+                            <li>Your paper will appear on the homepage immediately after successful upload.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-file-pdf"></i></span> What file types are accepted?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <ul>
+                            <li><strong>PDF files</strong> (required) – Maximum size: <strong>10MB</strong></li>
+                            <li><strong>ZIP, RAR, 7z files</strong> (optional, for software projects) – Maximum size: <strong>50MB</strong></li>
+                        </ul>
+                        <p>Only these formats are allowed. Make sure your files are within the size limits.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-key"></i></span> How do I reset my password?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Go to the <a href="auth.html" style="color:var(--primary-color);">Login page</a> and click on <strong>"Forgot password?"</strong>. Enter your UMYU email address and we'll send you a password reset link. Check your inbox (and spam folder) for the email.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-user-slash"></i></span> How do I delete my account?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>To delete your account and all associated data, please <a href="contact.html" style="color:var(--primary-color);">contact us</a> with your account details. We will process your request within 48 hours. Alternatively, you can delete your uploaded papers directly from your <a href="profile.html" style="color:var(--primary-color);">profile page</a>.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-download"></i></span> Can I download papers for free?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! <strong>All papers on UMYU Scholar are freely available</strong> for research and personal use. You do not need to sign in to download papers. However, signing in allows you to like, bookmark, and upload your own work.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 7 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-envelope"></i></span> How do I verify my email?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>After signing up, you will receive a <strong>verification email</strong> from UMYU Scholar. Open the email and click the verification link. If you don't see the email, check your <strong>spam folder</strong>. You can also request a new verification email from the login page.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 8 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-exclamation-triangle"></i></span> Why is my upload not showing?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>If your upload is not appearing, please ensure:</p>
+                        <ul>
+                            <li>Your email is <strong>verified</strong> (check your inbox).</li>
+                            <li>You are using a valid <strong>@umyu.edu.ng</strong> or <strong>@students.umyu.edu.ng</strong> email.</li>
+                            <li>You filled in all <strong>required fields</strong> correctly.</li>
+                            <li>The <strong>PDF file</strong> is under 10MB and is in the correct format.</li>
+                            <li>If all else fails, <a href="contact.html" style="color:var(--primary-color);">contact us</a> for assistance.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 9 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-code"></i></span> Can I upload software with my paper?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! If your research includes software, source code, or databases, you can upload a <strong>ZIP, RAR, or 7z</strong> archive (max 50MB) along with your paper. This is optional but highly encouraged for software-related projects.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 10 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span><span class="icon"><i class="fas fa-users"></i></span> Can I have multiple authors?</span>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! The upload form allows you to add <strong>multiple authors</strong>. Simply click the <strong>"Add Author"</strong> button to include co-authors. All authors will be displayed on the paper page.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Still Need Help -->
+            <div class="contact-section">
+                <div class="text">
+                    <h3><i class="fas fa-headset" style="color:var(--primary-color);"></i> Still need help?</h3>
+                    <p>If you couldn't find what you're looking for, our team is ready to assist you.</p>
+                </div>
+                <a href="contact.html" class="btn"><i class="fas fa-envelope"></i> Contact Us</a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast-notification" id="toastNotification"></div>
+
+    <!-- CUSTOM CONFIRM -->
+    <div class="custom-confirm-overlay" id="customConfirmOverlay">
+        <div class="custom-confirm-box">
+            <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
+            <h3 id="confirmTitle">Are you sure?</h3>
+            <p id="confirmMessage">This action cannot be undone.</p>
+            <div class="btn-group">
+                <button class="btn-cancel" id="confirmCancel">Cancel</button>
+                <button class="btn-danger" id="confirmOk">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ----- IMPORTS -----
+        import { 
+            auth, 
+            onAuthStateChanged, signOut
+        } from './js/firebase-config.js';
+
+        // ----- DOM REFS -----
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('drawerOverlay');
+        const hamburger = document.getElementById('hamburgerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const uploadLink = document.getElementById('uploadLink');
+        const profileLink = document.getElementById('profileLink');
+        const libraryLink = document.getElementById('libraryLink');
+        const sidebarUser = document.getElementById('sidebarUser');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userDisplayEmail = document.getElementById('userDisplayEmail');
+        const toastNotification = document.getElementById('toastNotification');
+
+        const confirmOverlay = document.getElementById('customConfirmOverlay');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmOk = document.getElementById('confirmOk');
+        const confirmCancel = document.getElementById('confirmCancel');
+
+        // ----- STATE -----
+        let currentUser = null;
+
+        // ----- HELPER: Check UMYU Email -----
+        function isUmyuEmail(email) {
+            if (!email) return false;
+            const lowerEmail = email.toLowerCase().trim();
+            return lowerEmail.endsWith('@umyu.edu.ng') || lowerEmail.endsWith('@students.umyu.edu.ng');
+        }
+
+        // ----- HELPER: Get clean display name -----
+        function getCleanDisplayName(displayName) {
+            if (!displayName) return 'Guest';
+            return displayName.replace(/\s*\([^)]*\)\s*/g, '').trim();
+        }
+
+        // ----- TOAST -----
+        function showToast(message, type = 'success', duration = 3000) {
+            toastNotification.textContent = message;
+            toastNotification.className = 'toast-notification show ' + type;
+            clearTimeout(toastNotification._timeout);
+            toastNotification._timeout = setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, duration);
+        }
+
+        // ----- SIDE DRAWER -----
+        function openDrawer() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+        function closeDrawer() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        hamburger.addEventListener('click', openDrawer);
+        overlay.addEventListener('click', closeDrawer);
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 767) closeDrawer();
+            });
+        });
+
+        // ----- FAQ ACCORDION -----
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.faq-item');
+                const isOpen = item.classList.contains('open');
+                // Close all open items
+                document.querySelectorAll('.faq-item.open').forEach(openItem => {
+                    if (openItem !== item) {
+                        openItem.classList.remove('open');
+                    }
+                });
+                if (isOpen) {
+                    item.classList.remove('open');
+                } else {
+                    item.classList.add('open');
+                }
+            });
+        });
+
+        // ----- CUSTOM CONFIRM -----
+        function showConfirm(title, message, onConfirm) {
+            confirmTitle.textContent = title;
+            confirmMessage.textContent = message;
+            confirmOverlay.classList.add('active');
+            
+            const handleConfirm = () => {
+                confirmOverlay.classList.remove('active');
+                confirmOk.removeEventListener('click', handleConfirm);
+                confirmCancel.removeEventListener('click', handleCancel);
+                onConfirm();
+            };
+            
+            const handleCancel = () => {
+                confirmOverlay.classList.remove('active');
+                confirmOk.removeEventListener('click', handleConfirm);
+                confirmCancel.removeEventListener('click', handleCancel);
+            };
+            
+            confirmOk.addEventListener('click', handleConfirm);
+            confirmCancel.addEventListener('click', handleCancel);
+            
+            confirmOverlay.addEventListener('click', (e) => {
+                if (e.target === confirmOverlay) {
+                    confirmOverlay.classList.remove('active');
+                    confirmOk.removeEventListener('click', handleConfirm);
+                    confirmCancel.removeEventListener('click', handleCancel);
+                }
+            });
+        }
+
+        // ----- LOGOUT -----
+        logoutBtn.addEventListener('click', () => {
+            showConfirm(
+                'Logout Confirmation',
+                'Are you sure you want to logout? You will need to sign in again to upload or like papers.',
+                async () => {
+                    try {
+                        await signOut(auth);
+                        showToast('✅ Logged out successfully!', 'success', 3000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } catch (error) {
+                        showToast('❌ Logout failed. Please try again.', 'error', 3000);
+                    }
+                }
+            );
+        });
+
+        // ----- AUTH STATE -----
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                const cleanName = getCleanDisplayName(displayName);
+                userDisplayName.textContent = cleanName;
+                userDisplayEmail.textContent = user.email;
+
+                if (user.photoURL) {
+                    userAvatar.src = user.photoURL;
+                } else {
+                    userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=1a7a3c&color=fff&size=48`;
+                }
+
+                logoutBtn.style.display = 'block';
+                profileLink.classList.remove('hidden-tab');
+                libraryLink.classList.remove('hidden-tab');
+                
+                if (isUmyuEmail(user.email)) {
+                    uploadLink.classList.remove('hidden-tab');
+                } else {
+                    uploadLink.classList.add('hidden-tab');
+                }
+
+                sidebarUser.removeAttribute('href');
+                sidebarUser.style.cursor = 'default';
+
+            } else {
+                userDisplayName.textContent = 'Guest';
+                userDisplayEmail.textContent = 'Not signed in';
+                userAvatar.src = 'https://ui-avatars.com/api/?name=Guest&background=1a7a3c&color=fff&size=48';
+
+                logoutBtn.style.display = 'none';
+                profileLink.classList.add('hidden-tab');
+                libraryLink.classList.add('hidden-tab');
+                uploadLink.classList.add('hidden-tab');
+
+                sidebarUser.href = 'auth.html';
+                sidebarUser.style.cursor = 'pointer';
+            }
+        });
+
+        console.log('✅ UMYU Scholar Support page loaded successfully!');
+    </script>
+</body>
+</html>

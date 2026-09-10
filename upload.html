@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMYU Scholar - Upload Paper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+            --primary-color: #1a3c34;
+            --primary-light: #2a5c4a;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        body {
+            background: #f4f6f9;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .sidebar-logo {
+            text-align: center;
+            padding: 10px 0 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .sidebar-logo img {
+            max-height: 50px;
+            width: auto;
+        }
+        .sidebar-logo .site-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-top: 4px;
+        }
+        .sidebar-user {
+            padding: 20px 20px 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar-user:hover {
+            background: #f8f9fa;
+        }
+        .sidebar-user .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e9ecef;
+            border: 2px solid var(--primary-color);
+        }
+        .sidebar-user .user-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar-user .user-info .name {
+            font-weight: 600;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-user .user-info .email {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 15px 0;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 24px;
+            color: #333;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover {
+            background: #f1f3f5;
+            border-left-color: var(--primary-color);
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #495057;
+        }
+        .sidebar-nav a.active {
+            background: #e9ecef;
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .sidebar-nav a.hidden-tab {
+            display: none;
+        }
+        .sidebar-bottom {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        .sidebar-bottom a {
+            display: block;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        .sidebar-bottom a:hover {
+            color: var(--primary-color);
+        }
+        .logout-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+        .drawer-overlay.active {
+            display: block;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* MOBILE HEADER */
+        .mobile-header {
+            display: none;
+            background: white;
+            padding: 14px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-header .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        .mobile-header .mobile-logo img {
+            max-height: 35px;
+        }
+
+        /* PAGE CONTENT */
+        .page-content {
+            padding: 40px 30px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            font-size: 28px;
+        }
+        .page-header p {
+            color: #6c757d;
+            font-size: 15px;
+            margin-top: 4px;
+        }
+
+        /* FORM */
+        .upload-form {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+        }
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .form-group label .required {
+            color: #dc3545;
+            margin-left: 2px;
+        }
+        .form-group label .optional {
+            color: #6c757d;
+            font-weight: 400;
+            font-size: 12px;
+            margin-left: 6px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+            background: #fafafa;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.1);
+            background: white;
+        }
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+        .form-group input.success,
+        .form-group textarea.success {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-group .hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+            min-height: 20px;
+        }
+        .form-group .hint.error-text {
+            color: #dc3545;
+        }
+        .form-group .hint.success-text {
+            color: #28a745;
+        }
+
+        /* AUTHORS SECTION */
+        .authors-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .author-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .author-row input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+            background: #fafafa;
+        }
+        .author-row input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.1);
+            background: white;
+        }
+        .author-row input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+        .author-row .remove-author {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .author-row .remove-author:hover {
+            background: #f8d7da;
+        }
+        .author-row .remove-author.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .add-author-btn {
+            background: none;
+            border: 2px dashed #dee2e6;
+            color: var(--primary-color);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+        }
+        .add-author-btn:hover {
+            background: #f1f3f5;
+            border-color: var(--primary-color);
+        }
+
+        /* FILE UPLOAD ZONES */
+        .file-upload-zone {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+            position: relative;
+        }
+        .file-upload-zone:hover {
+            border-color: var(--primary-color);
+            background: #f8f9fa;
+        }
+        .file-upload-zone.dragover {
+            border-color: var(--primary-color);
+            background: #e9ecef;
+            transform: scale(1.01);
+        }
+        .file-upload-zone .icon {
+            font-size: 42px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .file-upload-zone .text {
+            font-size: 15px;
+            color: #495057;
+        }
+        .file-upload-zone .subtext {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+        .file-upload-zone input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-upload-zone.has-file {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        /* FILE PREVIEW */
+        .file-preview {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 12px;
+            border: 1px solid #e9ecef;
+        }
+        .file-preview.show {
+            display: flex;
+        }
+        .file-preview .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .file-preview .file-info i {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        .file-preview .file-info .file-details .file-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        .file-preview .file-info .file-details .file-size {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .file-preview .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .file-preview .file-actions .remove-file {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .file-preview .file-actions .remove-file:hover {
+            background: #f8d7da;
+        }
+
+        /* PROGRESS BAR */
+        .upload-progress {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-progress.show {
+            display: block;
+        }
+        .upload-progress .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .upload-progress .progress-bar .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .upload-progress .progress-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* SUBMIT BUTTON */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .submit-btn:hover {
+            background: var(--primary-light);
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .submit-btn .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .submit-btn.loading .spinner {
+            display: inline-block;
+        }
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .terms-note {
+            text-align: center;
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .terms-note i {
+            color: var(--primary-color);
+            margin-right: 6px;
+        }
+
+        /* ACCESS DENIED */
+        .access-denied {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .access-denied .icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        .access-denied h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .access-denied p {
+            color: #6c757d;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        .access-denied .btn-home {
+            display: inline-block;
+            padding: 12px 32px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .access-denied .btn-home:hover {
+            background: var(--primary-light);
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            animation: toastIn 0.4s ease;
+            pointer-events: auto;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .toast.hiding {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        @keyframes toastIn {
+            from { transform: translateX(60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast .toast-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .toast .toast-content {
+            flex: 1;
+        }
+        .toast .toast-content .toast-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+        .toast .toast-content .toast-message {
+            font-size: 13px;
+            color: #495057;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+        .toast .toast-close {
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 4px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+        .toast .toast-close:hover {
+            color: #495057;
+        }
+        .toast.success { border-left-color: #28a745; }
+        .toast.success .toast-icon { color: #28a745; }
+        .toast.error { border-left-color: #dc3545; }
+        .toast.error .toast-icon { color: #dc3545; }
+        .toast.warning { border-left-color: #ffc107; }
+        .toast.warning .toast-icon { color: #ffc107; }
+        .toast.info { border-left-color: #0d6efd; }
+        .toast.info .toast-icon { color: #0d6efd; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-collapsed);
+                padding: 15px 0;
+            }
+            .sidebar .sidebar-logo img { max-height: 35px; }
+            .sidebar .sidebar-logo .site-name { display: none; }
+            .sidebar .sidebar-user .user-info { display: none; }
+            .sidebar .sidebar-user { justify-content: center; padding: 15px 0; }
+            .sidebar .sidebar-user .avatar-img { width: 40px; height: 40px; }
+            .sidebar-nav a { padding: 14px 0; justify-content: center; }
+            .sidebar-nav a span { display: none; }
+            .sidebar-nav a i { font-size: 22px; margin: 0; }
+            .sidebar-bottom a { text-align: center; font-size: 11px; }
+            .logout-btn { font-size: 12px; }
+            .main-content { margin-left: var(--sidebar-collapsed); }
+            .page-content { padding: 30px 20px; }
+            .upload-form { padding: 25px; }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-header {
+                display: flex;
+            }
+            .page-content {
+                padding: 20px 16px;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .upload-form {
+                padding: 20px;
+            }
+            .author-row {
+                flex-direction: row;
+            }
+            .file-upload-zone {
+                padding: 20px 15px;
+            }
+            .file-upload-zone .icon {
+                font-size: 32px;
+            }
+            .file-preview {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .file-preview .file-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .drawer-overlay { display: none !important; }
+            .mobile-header { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <img src="logo.png" alt="UMYU Scholar Logo">
+            <div class="site-name">UMYU Scholar</div>
+        </div>
+        <a href="auth.html" class="sidebar-user" id="sidebarUser">
+            <img src="https://ui-avatars.com/api/?name=Guest&background=1a3c34&color=fff&size=48" alt="Avatar" class="avatar-img" id="userAvatar">
+            <div class="user-info">
+                <div class="name" id="userDisplayName">Guest</div>
+                <div class="email" id="userDisplayEmail">Not signed in</div>
+            </div>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="profile.html" id="profileLink" class="hidden-tab"><i class="fas fa-user"></i><span>My Profile</span></a>
+            <a href="library.html" id="libraryLink" class="hidden-tab"><i class="fas fa-bookmark"></i><span>My Library</span></a>
+            <a href="upload.html" class="active"><i class="fas fa-upload"></i><span>Upload</span></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i><span>About</span></a>
+            <a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            <a href="support.html"><i class="fas fa-question-circle"></i><span>Support</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+            <a href="terms.html"><i class="fas fa-file-contract"></i> Terms of Use</a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- OVERLAY -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- MOBILE HEADER -->
+        <header class="mobile-header">
+            <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+            <div class="mobile-logo"><img src="logo.png" alt="UMYU Scholar"></div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content" id="pageContent">
+
+            <!-- ACCESS DENIED (hidden by default) -->
+            <div class="access-denied" id="accessDenied" style="display:none;">
+                <div class="icon"><i class="fas fa-lock"></i></div>
+                <h2>Access Denied</h2>
+                <p>You need a valid UMYU email address to upload papers to UMYU Scholar.</p>
+                <a href="index.html" class="btn-home"><i class="fas fa-arrow-left"></i> Return to Homepage</a>
+            </div>
+
+            <!-- UPLOAD FORM -->
+            <div id="uploadFormContainer">
+                <div class="page-header">
+                    <h1><i class="fas fa-upload" style="color: var(--primary-color);"></i> Upload Paper</h1>
+                    <p>Share your research with the UMYU community. Fill in the details below.</p>
+                </div>
+
+                <form class="upload-form" id="uploadForm" novalidate>
+
+                    <!-- Paper Title -->
+                    <div class="form-group">
+                        <label>Paper Title <span class="required">*</span></label>
+                        <input type="text" id="paperTitle" placeholder="Enter the full title of your paper..." required>
+                        <div class="hint" id="titleHint"></div>
+                    </div>
+
+                    <!-- Authors -->
+                    <div class="form-group">
+                        <label>Authors <span class="required">*</span></label>
+                        <div class="authors-container" id="authorsContainer">
+                            <div class="author-row" data-index="0">
+                                <input type="text" class="author-input" placeholder="Author name..." required>
+                                <button type="button" class="remove-author disabled" disabled>
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="add-author-btn" id="addAuthorBtn">
+                            <i class="fas fa-plus-circle"></i> Add Author
+                        </button>
+                        <div class="hint" id="authorHint"></div>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="form-group">
+                        <label>Department <span class="required">*</span></label>
+                        <input type="text" id="department" placeholder="e.g., Computer Science Education" required>
+                        <div class="hint" id="deptHint"></div>
+                    </div>
+
+                    <!-- Year -->
+                    <div class="form-group">
+                        <label>Year <span class="required">*</span></label>
+                        <input type="text" id="year" placeholder="e.g., 2026" required>
+                        <div class="hint" id="yearHint"></div>
+                    </div>
+
+                    <!-- Keywords -->
+                    <div class="form-group">
+                        <label>Keywords <span class="required">*</span></label>
+                        <input type="text" id="keywords" placeholder="Enter keywords separated by commas (e.g., AI, Education, Machine Learning)" required>
+                        <div class="hint" id="keywordHint"></div>
+                    </div>
+
+                    <!-- Abstract -->
+                    <div class="form-group">
+                        <label>Abstract <span class="required">*</span></label>
+                        <textarea id="abstract" placeholder="Write a summary of your research (150-500 words)..." required></textarea>
+                        <div class="hint" id="abstractHint">Minimum 150 words</div>
+                    </div>
+
+                    <!-- Author Contact -->
+                    <div class="form-group">
+                        <label>Author Contact <span class="required">*</span></label>
+                        <input type="text" id="contactInfo" placeholder="Email or phone number for readers to contact you" required>
+                        <div class="hint" id="contactHint"></div>
+                    </div>
+
+                    <!-- PDF Upload -->
+                    <div class="form-group">
+                        <label>PDF File <span class="required">*</span> <span class="optional">(Max 10MB)</span></label>
+                        <div class="file-upload-zone" id="pdfDropZone">
+                            <div class="icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="text">Drag & drop your PDF here</div>
+                            <div class="subtext">or click to browse</div>
+                            <input type="file" id="pdfFile" accept=".pdf" required>
+                        </div>
+                        <div class="file-preview" id="pdfPreview">
+                            <div class="file-info">
+                                <i class="fas fa-file-pdf"></i>
+                                <div class="file-details">
+                                    <div class="file-name" id="pdfFileName">document.pdf</div>
+                                    <div class="file-size" id="pdfFileSize">1.2 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <button type="button" class="remove-file" id="pdfRemoveBtn"><i class="fas fa-times-circle"></i></button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="pdfProgress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="pdfProgressFill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span id="pdfProgressLabel">Uploading...</span>
+                                <span id="pdfProgressPercent">0%</span>
+                            </div>
+                        </div>
+                        <div class="hint" id="pdfHint"></div>
+                    </div>
+
+                    <!-- Software Upload (Optional) -->
+                    <div class="form-group">
+                        <label>Software Files <span class="optional">(Optional - ZIP/RAR/7z)</span> <span class="optional">(Max 50MB)</span></label>
+                        <div class="file-upload-zone" id="softwareDropZone">
+                            <div class="icon"><i class="fas fa-code"></i></div>
+                            <div class="text">Drag & drop your software archive here</div>
+                            <div class="subtext">or click to browse. Supports ZIP, RAR, 7z</div>
+                            <input type="file" id="softwareFile" accept=".zip,.rar,.7z,.tar.gz">
+                        </div>
+                        <div class="file-preview" id="softwarePreview">
+                            <div class="file-info">
+                                <i class="fas fa-archive"></i>
+                                <div class="file-details">
+                                    <div class="file-name" id="softwareFileName">source.zip</div>
+                                    <div class="file-size" id="softwareFileSize">5.8 MB</div>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <button type="button" class="remove-file" id="softwareRemoveBtn"><i class="fas fa-times-circle"></i></button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="softwareProgress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="softwareProgressFill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span id="softwareProgressLabel">Uploading...</span>
+                                <span id="softwareProgressPercent">0%</span>
+                            </div>
+                        </div>
+                        <div class="hint" id="softwareHint"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text"><i class="fas fa-cloud-upload-alt"></i> Upload Paper</span>
+                    </button>
+
+                    <div class="terms-note">
+                        <i class="fas fa-shield-alt"></i>
+                        By uploading, you confirm this is your original work and you have the rights to share it.
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module">
+        // ----- IMPORTS -----
+        import { 
+            db, auth, 
+            collection, addDoc, 
+            onAuthStateChanged, signOut,
+            serverTimestamp
+        } from './js/firebase-config.js';
+
+        import { cloudinaryUploadUrl, uploadPreset } from './js/cloudinary-config.js';
+
+        // ----- DOM REFS -----
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('drawerOverlay');
+        const hamburger = document.getElementById('hamburgerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const uploadLink = document.getElementById('uploadLink');
+        const profileLink = document.getElementById('profileLink');
+        const libraryLink = document.getElementById('libraryLink');
+        const sidebarUser = document.getElementById('sidebarUser');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userDisplayEmail = document.getElementById('userDisplayEmail');
+        const accessDenied = document.getElementById('accessDenied');
+        const uploadFormContainer = document.getElementById('uploadFormContainer');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Form Elements
+        const form = document.getElementById('uploadForm');
+        const paperTitle = document.getElementById('paperTitle');
+        const authorsContainer = document.getElementById('authorsContainer');
+        const addAuthorBtn = document.getElementById('addAuthorBtn');
+        const department = document.getElementById('department');
+        const year = document.getElementById('year');
+        const keywords = document.getElementById('keywords');
+        const abstract = document.getElementById('abstract');
+        const contactInfo = document.getElementById('contactInfo');
+        const pdfFile = document.getElementById('pdfFile');
+        const pdfDropZone = document.getElementById('pdfDropZone');
+        const pdfPreview = document.getElementById('pdfPreview');
+        const pdfFileName = document.getElementById('pdfFileName');
+        const pdfFileSize = document.getElementById('pdfFileSize');
+        const pdfRemoveBtn = document.getElementById('pdfRemoveBtn');
+        const pdfProgress = document.getElementById('pdfProgress');
+        const pdfProgressFill = document.getElementById('pdfProgressFill');
+        const pdfProgressLabel = document.getElementById('pdfProgressLabel');
+        const pdfProgressPercent = document.getElementById('pdfProgressPercent');
+        const pdfHint = document.getElementById('pdfHint');
+        const softwareFile = document.getElementById('softwareFile');
+        const softwareDropZone = document.getElementById('softwareDropZone');
+        const softwarePreview = document.getElementById('softwarePreview');
+        const softwareFileName = document.getElementById('softwareFileName');
+        const softwareFileSize = document.getElementById('softwareFileSize');
+        const softwareRemoveBtn = document.getElementById('softwareRemoveBtn');
+        const softwareProgress = document.getElementById('softwareProgress');
+        const softwareProgressFill = document.getElementById('softwareProgressFill');
+        const softwareProgressLabel = document.getElementById('softwareProgressLabel');
+        const softwareProgressPercent = document.getElementById('softwareProgressPercent');
+        const softwareHint = document.getElementById('softwareHint');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Hint elements
+        const titleHint = document.getElementById('titleHint');
+        const authorHint = document.getElementById('authorHint');
+        const deptHint = document.getElementById('deptHint');
+        const yearHint = document.getElementById('yearHint');
+        const keywordHint = document.getElementById('keywordHint');
+        const abstractHint = document.getElementById('abstractHint');
+        const contactHint = document.getElementById('contactHint');
+
+        // ----- STATE -----
+        let currentUser = null;
+        let pdfFileData = null;
+        let softwareFileData = null;
+        let isUploading = false;
+
+        // ----- HELPER: Check UMYU Email -----
+        function isUmyuEmail(email) {
+            if (!email) return false;
+            const lowerEmail = email.toLowerCase().trim();
+            return lowerEmail.endsWith('@umyu.edu.ng') || lowerEmail.endsWith('@students.umyu.edu.ng');
+        }
+
+        // ----- TOAST SYSTEM -----
+        function showToast(title, message, type = 'info', duration = 5000) {
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="${icons[type] || icons.info}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close"><i class="fas fa-times"></i></button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            toast.querySelector('.toast-close').addEventListener('click', () => removeToast(toast));
+            if (duration > 0) {
+                setTimeout(() => removeToast(toast), duration);
+            }
+        }
+
+        function removeToast(toast) {
+            toast.classList.add('hiding');
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
+        }
+
+        // ----- SIDE DRAWER -----
+        function openDrawer() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+        function closeDrawer() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        hamburger.addEventListener('click', openDrawer);
+        overlay.addEventListener('click', closeDrawer);
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 767) closeDrawer();
+            });
+        });
+
+        // ----- AUTHORS MANAGEMENT -----
+        function getAuthors() {
+            const inputs = authorsContainer.querySelectorAll('.author-input');
+            const authors = [];
+            inputs.forEach(input => {
+                const val = input.value.trim();
+                if (val) authors.push(val);
+            });
+            return authors;
+        }
+
+        function updateAuthorRemoveButtons() {
+            const rows = authorsContainer.querySelectorAll('.author-row');
+            rows.forEach((row, index) => {
+                const btn = row.querySelector('.remove-author');
+                if (btn) {
+                    if (rows.length <= 1) {
+                        btn.classList.add('disabled');
+                        btn.disabled = true;
+                    } else {
+                        btn.classList.remove('disabled');
+                        btn.disabled = false;
+                    }
+                }
+            });
+        }
+
+        function validateAuthors() {
+            const authors = getAuthors();
+            if (authors.length === 0) {
+                if (authorHint) {
+                    authorHint.textContent = '⚠️ Please add at least one author.';
+                    authorHint.className = 'hint error-text';
+                }
+                return false;
+            }
+            const inputs = authorsContainer.querySelectorAll('.author-input');
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('error');
+                    allFilled = false;
+                } else {
+                    input.classList.remove('error');
+                }
+            });
+            if (!allFilled) {
+                if (authorHint) {
+                    authorHint.textContent = '⚠️ Please fill in all author names.';
+                    authorHint.className = 'hint error-text';
+                }
+                return false;
+            }
+            if (authorHint) {
+                authorHint.textContent = `✅ ${authors.length} author${authors.length > 1 ? 's' : ''}`;
+                authorHint.className = 'hint success-text';
+            }
+            return true;
+        }
+
+        // Add author button
+        if (addAuthorBtn) {
+            addAuthorBtn.addEventListener('click', () => {
+                const rowCount = authorsContainer.querySelectorAll('.author-row').length;
+                const row = document.createElement('div');
+                row.className = 'author-row';
+                row.dataset.index = rowCount;
+                row.innerHTML = `
+                    <input type="text" class="author-input" placeholder="Author name..." required>
+                    <button type="button" class="remove-author">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                authorsContainer.appendChild(row);
+                
+                row.querySelector('.remove-author').addEventListener('click', () => {
+                    if (authorsContainer.querySelectorAll('.author-row').length > 1) {
+                        row.remove();
+                        updateAuthorRemoveButtons();
+                        validateAuthors();
+                    }
+                });
+
+                row.querySelector('.author-input').addEventListener('input', validateAuthors);
+                row.querySelector('.author-input').addEventListener('blur', validateAuthors);
+
+                updateAuthorRemoveButtons();
+                validateAuthors();
+                row.querySelector('.author-input').focus();
+            });
+        }
+
+        // Initial author input events
+        document.querySelectorAll('.author-input').forEach(input => {
+            input.addEventListener('input', validateAuthors);
+            input.addEventListener('blur', validateAuthors);
+        });
+
+        // ----- FILE UPLOAD HELPERS -----
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // Setup file upload with proper null checks
+        function setupFileUpload(options) {
+            const {
+                dropZone,
+                fileInput,
+                preview,
+                fileName,
+                fileSize,
+                removeBtn,
+                progress,
+                progressFill,
+                progressLabel,
+                progressPercent,
+                hint,
+                maxSize,
+                allowedTypes,
+                typeName,
+                onFileSelected,
+                onFileRemoved
+            } = options;
+
+            // Early return if any required element is missing
+            if (!dropZone || !fileInput || !preview) {
+                console.warn(`⚠️ File upload for ${typeName} is missing required elements.`);
+                return {
+                    getFile: () => null,
+                    setProgress: () => {},
+                    resetProgress: () => {},
+                    getFileInput: () => fileInput,
+                    getHint: () => hint
+                };
+            }
+
+            let currentFile = null;
+
+            // Click to browse
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            // File selection
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    handleFile(fileInput.files[0]);
+                }
+            });
+
+            // Drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            function handleFile(file) {
+                // Validate type
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+                const isValidType = allowedTypes.some(type => ext === type || file.type === type);
+                if (!isValidType) {
+                    showToast('Invalid File', `Please upload a ${typeName} file.`, 'error');
+                    if (hint) {
+                        hint.textContent = `⚠️ Only ${typeName} files are allowed.`;
+                        hint.className = 'hint error-text';
+                    }
+                    return;
+                }
+
+                // Validate size
+                if (file.size > maxSize) {
+                    showToast('File Too Large', `Maximum size is ${formatFileSize(maxSize)}.`, 'error');
+                    if (hint) {
+                        hint.textContent = `⚠️ File exceeds ${formatFileSize(maxSize)} limit.`;
+                        hint.className = 'hint error-text';
+                    }
+                    return;
+                }
+
+                currentFile = file;
+                
+                // Update preview
+                if (fileName) fileName.textContent = file.name;
+                if (fileSize) fileSize.textContent = formatFileSize(file.size);
+                preview.classList.add('show');
+                dropZone.classList.add('has-file');
+                
+                if (hint) {
+                    hint.textContent = `✅ ${formatFileSize(file.size)} - Ready to upload`;
+                    hint.className = 'hint success-text';
+                }
+                
+                // Update file input
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+
+                if (onFileSelected) onFileSelected(file);
+            }
+
+            // Remove file
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    currentFile = null;
+                    preview.classList.remove('show');
+                    dropZone.classList.remove('has-file');
+                    fileInput.value = '';
+                    if (hint) {
+                        hint.textContent = '';
+                        hint.className = 'hint';
+                    }
+                    if (progress) progress.classList.remove('show');
+                    if (progressFill) progressFill.style.width = '0%';
+                    if (progressPercent) progressPercent.textContent = '0%';
+                    if (onFileRemoved) onFileRemoved();
+                });
+            }
+
+            return {
+                getFile: () => currentFile,
+                setProgress: (percent, label) => {
+                    if (progress) {
+                        progress.classList.add('show');
+                        if (progressFill) progressFill.style.width = percent + '%';
+                        if (progressPercent) progressPercent.textContent = percent + '%';
+                        if (label && progressLabel) progressLabel.textContent = label;
+                    }
+                },
+                resetProgress: () => {
+                    if (progress) progress.classList.remove('show');
+                    if (progressFill) progressFill.style.width = '0%';
+                    if (progressPercent) progressPercent.textContent = '0%';
+                },
+                getFileInput: () => fileInput,
+                getHint: () => hint
+            };
+        }
+
+        // Setup PDF upload
+        const pdfHandler = setupFileUpload({
+            dropZone: pdfDropZone,
+            fileInput: pdfFile,
+            preview: pdfPreview,
+            fileName: pdfFileName,
+            fileSize: pdfFileSize,
+            removeBtn: pdfRemoveBtn,
+            progress: pdfProgress,
+            progressFill: pdfProgressFill,
+            progressLabel: pdfProgressLabel,
+            progressPercent: pdfProgressPercent,
+            hint: pdfHint,
+            maxSize: 10 * 1024 * 1024,
+            allowedTypes: ['.pdf'],
+            typeName: 'PDF',
+            onFileSelected: (file) => { pdfFileData = file; },
+            onFileRemoved: () => { pdfFileData = null; }
+        });
+
+        // Setup Software upload
+        const softwareHandler = setupFileUpload({
+            dropZone: softwareDropZone,
+            fileInput: softwareFile,
+            preview: softwarePreview,
+            fileName: softwareFileName,
+            fileSize: softwareFileSize,
+            removeBtn: softwareRemoveBtn,
+            progress: softwareProgress,
+            progressFill: softwareProgressFill,
+            progressLabel: softwareProgressLabel,
+            progressPercent: softwareProgressPercent,
+            hint: softwareHint,
+            maxSize: 50 * 1024 * 1024,
+            allowedTypes: ['.zip', '.rar', '.7z', '.tar.gz'],
+            typeName: 'ZIP/RAR/7z',
+            onFileSelected: (file) => { softwareFileData = file; },
+            onFileRemoved: () => { softwareFileData = null; }
+        });
+
+        // ----- REAL-TIME VALIDATION -----
+        function validateField(input, hint, validationFn, errorMsg, successMsg) {
+            if (!input || !hint) return true;
+            const val = input.value.trim();
+            const result = validationFn(val);
+            if (result === true) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                hint.textContent = successMsg || '✅ Looks good!';
+                hint.className = 'hint success-text';
+                return true;
+            } else {
+                input.classList.remove('success');
+                input.classList.add('error');
+                hint.textContent = result || errorMsg || '⚠️ Invalid input.';
+                hint.className = 'hint error-text';
+                return false;
+            }
+        }
+
+        // Title validation
+        if (paperTitle && titleHint) {
+            paperTitle.addEventListener('input', () => {
+                validateField(paperTitle, titleHint, 
+                    (v) => v.length > 0 && v.length <= 200,
+                    '⚠️ Please enter a title (max 200 characters).',
+                    '✅ Title looks good!'
+                );
+            });
+        }
+
+        // Department validation
+        if (department && deptHint) {
+            department.addEventListener('input', () => {
+                validateField(department, deptHint,
+                    (v) => v.length >= 2,
+                    '⚠️ Please enter your department.',
+                    '✅ Department entered.'
+                );
+            });
+        }
+
+        // Year validation
+        if (year && yearHint) {
+            year.addEventListener('input', () => {
+                validateField(year, yearHint,
+                    (v) => /^\d{4}$/.test(v) && parseInt(v) >= 2000 && parseInt(v) <= 2100,
+                    '⚠️ Please enter a valid year (e.g., 2026).',
+                    '✅ Valid year.'
+                );
+            });
+        }
+
+        // Keywords validation
+        if (keywords && keywordHint) {
+            keywords.addEventListener('input', () => {
+                validateField(keywords, keywordHint,
+                    (v) => v.length >= 3,
+                    '⚠️ Please enter at least one keyword.',
+                    '✅ Keywords entered.'
+                );
+            });
+        }
+
+        // Abstract validation
+        if (abstract && abstractHint) {
+            abstract.addEventListener('input', () => {
+                const words = abstract.value.trim().split(/\s+/).filter(w => w.length > 0);
+                const count = words.length;
+                if (count === 0) {
+                    abstract.classList.remove('success');
+                    abstract.classList.add('error');
+                    abstractHint.textContent = '⚠️ Please write an abstract (minimum 150 words).';
+                    abstractHint.className = 'hint error-text';
+                } else if (count < 150) {
+                    abstract.classList.remove('success');
+                    abstract.classList.add('error');
+                    abstractHint.textContent = `⚠️ ${count} words - Need at least 150 words (${150 - count} more).`;
+                    abstractHint.className = 'hint error-text';
+                } else if (count > 500) {
+                    abstract.classList.remove('success');
+                    abstract.classList.add('error');
+                    abstractHint.textContent = `⚠️ ${count} words - Maximum 500 words (${count - 500} too many).`;
+                    abstractHint.className = 'hint error-text';
+                } else {
+                    abstract.classList.remove('error');
+                    abstract.classList.add('success');
+                    abstractHint.textContent = `✅ ${count} words - Perfect!`;
+                    abstractHint.className = 'hint success-text';
+                }
+            });
+        }
+
+        // Contact validation
+        if (contactInfo && contactHint) {
+            contactInfo.addEventListener('input', () => {
+                validateField(contactInfo, contactHint,
+                    (v) => v.length >= 5,
+                    '⚠️ Please provide contact information.',
+                    '✅ Contact provided.'
+                );
+            });
+        }
+
+        // ----- UPLOAD TO CLOUDINARY -----
+        function uploadToCloudinary(file, progressHandler, folder, fileType) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', uploadPreset);
+                formData.append('folder', folder);
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', cloudinaryUploadUrl, true);
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressHandler(percent, `Uploading ${fileType}... ${percent}%`);
+                    }
+                });
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            progressHandler(100, `${fileType} uploaded successfully! ✅`);
+                            resolve(response.secure_url);
+                        } catch (err) {
+                            reject(new Error('Failed to parse upload response.'));
+                        }
+                    } else {
+                        reject(new Error(`Upload failed: ${xhr.status}`));
+                    }
+                };
+
+                xhr.onerror = () => {
+                    reject(new Error('Network error. Please check your connection.'));
+                };
+
+                xhr.send(formData);
+            });
+        }
+
+        // ----- FORM SUBMISSION -----
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (isUploading) return;
+
+                // Validate all fields
+                let isValid = true;
+
+                // Title
+                if (paperTitle && !paperTitle.value.trim()) {
+                    paperTitle.classList.add('error');
+                    if (titleHint) {
+                        titleHint.textContent = '⚠️ Please enter a title.';
+                        titleHint.className = 'hint error-text';
+                    }
+                    isValid = false;
+                }
+
+                // Authors
+                if (!validateAuthors()) isValid = false;
+
+                // Department
+                if (department && !department.value.trim()) {
+                    department.classList.add('error');
+                    if (deptHint) {
+                        deptHint.textContent = '⚠️ Please enter your department.';
+                        deptHint.className = 'hint error-text';
+                    }
+                    isValid = false;
+                }
+
+                // Year
+                if (year) {
+                    const yearVal = year.value.trim();
+                    if (!yearVal || !/^\d{4}$/.test(yearVal) || parseInt(yearVal) < 2000 || parseInt(yearVal) > 2100) {
+                        year.classList.add('error');
+                        if (yearHint) {
+                            yearHint.textContent = '⚠️ Please enter a valid year (e.g., 2026).';
+                            yearHint.className = 'hint error-text';
+                        }
+                        isValid = false;
+                    }
+                }
+
+                // Keywords
+                if (keywords && !keywords.value.trim()) {
+                    keywords.classList.add('error');
+                    if (keywordHint) {
+                        keywordHint.textContent = '⚠️ Please enter keywords.';
+                        keywordHint.className = 'hint error-text';
+                    }
+                    isValid = false;
+                }
+
+                // Abstract
+                if (abstract) {
+                    const words = abstract.value.trim().split(/\s+/).filter(w => w.length > 0);
+                    if (words.length < 150) {
+                        abstract.classList.add('error');
+                        if (abstractHint) {
+                            abstractHint.textContent = `⚠️ Abstract too short (${words.length} words). Minimum 150 words.`;
+                            abstractHint.className = 'hint error-text';
+                        }
+                        isValid = false;
+                    } else if (words.length > 500) {
+                        abstract.classList.add('error');
+                        if (abstractHint) {
+                            abstractHint.textContent = `⚠️ Abstract too long (${words.length} words). Maximum 500 words.`;
+                            abstractHint.className = 'hint error-text';
+                        }
+                        isValid = false;
+                    }
+                }
+
+                // Contact
+                if (contactInfo && !contactInfo.value.trim()) {
+                    contactInfo.classList.add('error');
+                    if (contactHint) {
+                        contactHint.textContent = '⚠️ Please provide contact information.';
+                        contactHint.className = 'hint error-text';
+                    }
+                    isValid = false;
+                }
+
+                // PDF
+                if (!pdfFileData) {
+                    if (pdfHint) {
+                        pdfHint.textContent = '⚠️ Please upload a PDF file.';
+                        pdfHint.className = 'hint error-text';
+                    }
+                    if (pdfDropZone) pdfDropZone.style.borderColor = '#dc3545';
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    showToast('Validation Error', 'Please fix the highlighted fields and try again.', 'warning');
+                    const firstError = form.querySelector('.error');
+                    if (firstError) {
+                        firstError.focus();
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+
+                // Start upload
+                isUploading = true;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('loading');
+                }
+
+                try {
+                    // Upload PDF to Cloudinary
+                    let pdfUrl = null;
+                    let softwareUrl = null;
+
+                    try {
+                        pdfUrl = await uploadToCloudinary(
+                            pdfFileData,
+                            (percent, label) => {
+                                if (pdfHandler) pdfHandler.setProgress(percent, label);
+                            },
+                            'UMYU_Papers/PDFs',
+                            'PDF'
+                        );
+                    } catch (err) {
+                        showToast('PDF Upload Failed', err.message || 'Failed to upload PDF. Please try again.', 'error');
+                        if (pdfHandler) pdfHandler.resetProgress();
+                        isUploading = false;
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('loading');
+                        }
+                        return;
+                    }
+
+                    // Upload Software if provided
+                    if (softwareFileData) {
+                        try {
+                            softwareUrl = await uploadToCloudinary(
+                                softwareFileData,
+                                (percent, label) => {
+                                    if (softwareHandler) softwareHandler.setProgress(percent, label);
+                                },
+                                'UMYU_Papers/Software',
+                                'Software'
+                            );
+                        } catch (err) {
+                            showToast('Software Upload Failed', err.message || 'Failed to upload software. Paper not saved.', 'error');
+                            if (softwareHandler) softwareHandler.resetProgress();
+                            isUploading = false;
+                            if (submitBtn) {
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('loading');
+                            }
+                            return;
+                        }
+                    }
+
+                    // Save to Firestore
+                    const authors = getAuthors();
+                    const keywordArray = keywords.value.split(',').map(k => k.trim()).filter(k => k);
+
+                    const paperData = {
+                        title: paperTitle.value.trim(),
+                        authors: authors,
+                        department: department.value.trim(),
+                        year: year.value.trim(),
+                        keywords: keywordArray,
+                        abstract: abstract.value.trim(),
+                        contactInfo: contactInfo.value.trim(),
+                        pdfUrl: pdfUrl,
+                        softwareUrl: softwareUrl || null,
+                        hasSoftware: !!softwareUrl,
+                        softwareType: softwareFileData ? softwareFileData.name.split('.').pop().toLowerCase() : null,
+                        softwareSize: softwareFileData ? formatFileSize(softwareFileData.size) : null,
+                        uploadedBy: currentUser.uid,
+                        uploaderName: currentUser.displayName || currentUser.email.split('@')[0],
+                        uploaderEmail: currentUser.email,
+                        likesCount: 0,
+                        likedBy: [],
+                        downloads: 0,
+                        downloadsSoftware: 0,
+                        views: 0,
+                        timestamp: serverTimestamp()
+                    };
+
+                    await addDoc(collection(db, 'papers'), paperData);
+
+                    // Success!
+                    showToast('Upload Successful! 🎉', 'Your paper has been uploaded to UMYU Scholar.', 'success', 5000);
+
+                    // Reset form after a moment
+                    setTimeout(() => {
+                        form.reset();
+                        pdfFileData = null;
+                        softwareFileData = null;
+                        if (pdfPreview) pdfPreview.classList.remove('show');
+                        if (pdfDropZone) pdfDropZone.classList.remove('has-file');
+                        if (softwarePreview) softwarePreview.classList.remove('show');
+                        if (softwareDropZone) softwareDropZone.classList.remove('has-file');
+                        if (pdfHandler) pdfHandler.resetProgress();
+                        if (softwareHandler) softwareHandler.resetProgress();
+                        document.querySelectorAll('.form-group input, .form-group textarea').forEach(el => {
+                            el.classList.remove('success', 'error');
+                        });
+                        document.querySelectorAll('.hint').forEach(h => {
+                            h.textContent = '';
+                            h.className = 'hint';
+                        });
+                        // Reset authors to one
+                        while (authorsContainer.querySelectorAll('.author-row').length > 1) {
+                            authorsContainer.querySelector('.author-row:last-child').remove();
+                        }
+                        const firstAuthor = authorsContainer.querySelector('.author-input');
+                        if (firstAuthor) firstAuthor.value = '';
+                        updateAuthorRemoveButtons();
+                        validateAuthors();
+
+                        // Redirect to homepage after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showToast('Upload Failed', 'Something went wrong. Please try again.', 'error');
+                } finally {
+                    isUploading = false;
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+                    }
+                }
+            });
+        }
+
+        // ----- LOGOUT -----
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to logout?')) {
+                    try {
+                        await signOut(auth);
+                        showToast('Logged out successfully!', 'See you soon.', 'success');
+                        setTimeout(() => window.location.reload(), 500);
+                    } catch (error) {
+                        showToast('Logout Failed', 'Please try again.', 'error');
+                    }
+                }
+            });
+        }
+
+        // ----- AUTH STATE -----
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                if (userDisplayName) userDisplayName.textContent = displayName;
+                if (userDisplayEmail) userDisplayEmail.textContent = user.email;
+
+                if (user.photoURL) {
+                    if (userAvatar) userAvatar.src = user.photoURL;
+                } else {
+                    if (userAvatar) {
+                        userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1a3c34&color=fff&size=48`;
+                    }
+                }
+
+                if (logoutBtn) logoutBtn.style.display = 'block';
+                if (profileLink) profileLink.classList.remove('hidden-tab');
+                if (libraryLink) libraryLink.classList.remove('hidden-tab');
+                if (uploadLink) uploadLink.classList.remove('hidden-tab');
+
+                if (sidebarUser) {
+                    sidebarUser.removeAttribute('href');
+                    sidebarUser.style.cursor = 'default';
+                }
+
+                // Check if UMYU email
+                if (isUmyuEmail(user.email)) {
+                    if (accessDenied) accessDenied.style.display = 'none';
+                    if (uploadFormContainer) uploadFormContainer.style.display = 'block';
+                } else {
+                    if (accessDenied) accessDenied.style.display = 'block';
+                    if (uploadFormContainer) uploadFormContainer.style.display = 'none';
+                }
+
+            } else {
+                if (userDisplayName) userDisplayName.textContent = 'Guest';
+                if (userDisplayEmail) userDisplayEmail.textContent = 'Not signed in';
+                if (userAvatar) {
+                    userAvatar.src = 'https://ui-avatars.com/api/?name=Guest&background=1a3c34&color=fff&size=48';
+                }
+
+                if (logoutBtn) logoutBtn.style.display = 'none';
+                if (profileLink) profileLink.classList.add('hidden-tab');
+                if (libraryLink) libraryLink.classList.add('hidden-tab');
+                if (uploadLink) uploadLink.classList.add('hidden-tab');
+
+                if (sidebarUser) {
+                    sidebarUser.href = 'auth.html';
+                    sidebarUser.style.cursor = 'pointer';
+                }
+
+                // Redirect to auth if not logged in
+                window.location.href = 'auth.html';
+            }
+        });
+
+        console.log('✅ UMYU Scholar Upload page loaded successfully!');
+    </script>
+</body>
+</html>

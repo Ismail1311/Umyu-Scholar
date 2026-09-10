@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMYU Scholar - Authentication</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a3c34 0%, #2a5c4a 100%);
+            padding: 20px;
+        }
+        .auth-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 35px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+            position: relative;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .auth-container .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .auth-container .logo img {
+            max-height: 55px;
+        }
+        .auth-container h2 {
+            text-align: center;
+            color: #1a3c34;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .auth-container .subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .tabs {
+            display: flex;
+            background: #f1f3f5;
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 25px;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #495057;
+        }
+        .tabs button.active {
+            background: white;
+            color: #1a3c34;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+            background: #fafafa;
+            padding-right: 48px;
+        }
+        .form-group input:focus {
+            border-color: #1a3c34;
+            box-shadow: 0 0 0 3px rgba(26, 60, 52, 0.1);
+            background: white;
+        }
+        .form-group input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+        .form-group input.success {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+        /* Password toggle button */
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+            z-index: 5;
+        }
+        .password-toggle:hover {
+            color: #1a3c34;
+        }
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 18px;
+        }
+        .forgot-password a {
+            color: #0d6efd;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .forgot-password a:hover {
+            color: #0a58ca;
+            text-decoration: underline;
+        }
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1a3c34;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 5px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .auth-btn:hover {
+            background: #2a5c4a;
+        }
+        .auth-btn:active {
+            transform: scale(0.98);
+        }
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .auth-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .auth-btn.loading .spinner {
+            display: inline-block;
+        }
+        .auth-btn.loading .btn-text {
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #1a3c34;
+        }
+        .restriction-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #856404;
+            margin-bottom: 18px;
+        }
+        .restriction-note i {
+            margin-right: 6px;
+        }
+        .verification-pending {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .verification-pending.active {
+            display: block;
+        }
+        .verification-pending .icon {
+            font-size: 56px;
+            color: #1a3c34;
+            margin-bottom: 15px;
+        }
+        .verification-pending h3 {
+            color: #1a3c34;
+            margin-bottom: 8px;
+        }
+        .verification-pending p {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .verification-pending .email-highlight {
+            font-weight: 700;
+            color: #1a3c34;
+        }
+        .verification-pending .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .verification-pending .btn-group .btn-secondary {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .verification-pending .btn-group .btn-secondary:hover {
+            background: #0b5ed7;
+        }
+        .verification-pending .btn-group .btn-success {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .verification-pending .btn-group .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Toast System */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            animation: toastIn 0.4s ease;
+            pointer-events: auto;
+            border-left: 5px solid #1a3c34;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .toast.hiding {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        @keyframes toastIn {
+            from { transform: translateX(60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast .toast-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .toast .toast-content {
+            flex: 1;
+        }
+        .toast .toast-content .toast-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+        .toast .toast-content .toast-message {
+            font-size: 13px;
+            color: #495057;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+        .toast .toast-close {
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 4px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+        .toast .toast-close:hover {
+            color: #495057;
+        }
+        .toast.success { border-left-color: #28a745; }
+        .toast.success .toast-icon { color: #28a745; }
+        .toast.error { border-left-color: #dc3545; }
+        .toast.error .toast-icon { color: #dc3545; }
+        .toast.warning { border-left-color: #ffc107; }
+        .toast.warning .toast-icon { color: #ffc107; }
+        .toast.info { border-left-color: #0d6efd; }
+        .toast.info .toast-icon { color: #0d6efd; }
+
+        /* Forgot Password Modal */
+        .forgot-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99998;
+            align-items: center;
+            justify-content: center;
+        }
+        .forgot-modal-overlay.active {
+            display: flex;
+        }
+        .forgot-modal-box {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            padding: 35px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+        .forgot-modal-box .icon {
+            font-size: 48px;
+            color: #0d6efd;
+            margin-bottom: 15px;
+        }
+        .forgot-modal-box h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        .forgot-modal-box p {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .forgot-modal-box .form-group {
+            margin-bottom: 16px;
+        }
+        .forgot-modal-box .form-group input {
+            padding-right: 16px;
+        }
+        .forgot-modal-box .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        .forgot-modal-box .btn-group button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .forgot-modal-box .btn-group .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .forgot-modal-box .btn-group .btn-cancel:hover {
+            background: #dee2e6;
+        }
+        .forgot-modal-box .btn-group .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+        .forgot-modal-box .btn-group .btn-primary:hover {
+            background: #0b5ed7;
+        }
+        .forgot-modal-box .btn-group .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .forgot-modal-box .spinner-small {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        .forgot-modal-box .spinner-small.active {
+            display: inline-block;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
+            .toast {
+                padding: 14px 16px;
+            }
+            .forgot-modal-box .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="forgot-modal-overlay" id="forgotModal">
+        <div class="forgot-modal-box">
+            <div class="icon"><i class="fas fa-key"></i></div>
+            <h3>Reset Your Password</h3>
+            <p>Enter your UMYU email address and we'll send you a link to reset your password.</p>
+            <div class="form-group">
+                <input type="email" id="forgotEmail" placeholder="you@umyu.edu.ng" required>
+            </div>
+            <div class="btn-group">
+                <button class="btn-cancel" id="forgotCancel">Cancel</button>
+                <button class="btn-primary" id="forgotSubmit">
+                    <span class="spinner-small" id="forgotSpinner"></span>
+                    <span id="forgotText">Send Reset Link</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-container">
+        <div class="logo">
+            <img src="logo.png" alt="UMYU Scholar">
+        </div>
+        <h2 id="pageTitle">Welcome to UMYU Scholar</h2>
+        <p class="subtitle" id="pageSubtitle">Sign in to upload, bookmark, and like papers.</p>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="active" id="loginTab">Login</button>
+            <button id="signupTab">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="you@umyu.edu.ng" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                <button type="button" class="password-toggle" id="loginPasswordToggle">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="forgot-password">
+                <a href="#" id="forgotLink">Forgot password?</a>
+            </div>
+            <button type="submit" class="auth-btn" id="loginBtn">
+                <span class="spinner"></span>
+                <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Login</span>
+            </button>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display: none;">
+            <div class="restriction-note">
+                <i class="fas fa-university"></i> <strong>UMYU Only:</strong> Use your <strong>@umyu.edu.ng</strong> or <strong>@students.umyu.edu.ng</strong> email.
+            </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" placeholder="Aliyu Bello" required autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="signupEmail" placeholder="you@umyu.edu.ng" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signupPassword" placeholder="Min 6 characters" minlength="6" required autocomplete="new-password">
+                <button type="button" class="password-toggle" id="signupPasswordToggle">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <button type="submit" class="auth-btn" id="signupBtn">
+                <span class="spinner"></span>
+                <span class="btn-text"><i class="fas fa-user-plus"></i> Create Account</span>
+            </button>
+        </form>
+
+        <!-- Verification Pending Screen -->
+        <div class="verification-pending" id="verificationPending">
+            <div class="icon"><i class="fas fa-envelope"></i></div>
+            <h3>Verify Your Email</h3>
+            <p>We sent a verification link to</p>
+            <p class="email-highlight" id="pendingEmail">user@umyu.edu.ng</p>
+            <p style="color: #6c757d; font-size: 13px; margin-top: 8px;">
+                Please check your inbox <strong>and spam folder</strong> and click the verification link.
+            </p>
+            <div class="btn-group">
+                <button class="btn-secondary" id="resendVerificationBtn">
+                    <i class="fas fa-redo"></i> Resend Verification Email
+                </button>
+                <button class="btn-success" id="checkVerifiedBtn">
+                    <i class="fas fa-check"></i> I've Verified, Check Now
+                </button>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <script type="module">
+        // ----- IMPORTS -----
+        import { 
+            auth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            updateProfile,
+            sendEmailVerification,
+            sendPasswordResetEmail,
+            reload,
+            onAuthStateChanged,
+            signOut
+        } from './js/firebase-config.js';
+
+        // ----- DOM REFS -----
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const signupName = document.getElementById('signupName');
+        const signupEmail = document.getElementById('signupEmail');
+        const signupPassword = document.getElementById('signupPassword');
+        const pageTitle = document.getElementById('pageTitle');
+        const pageSubtitle = document.getElementById('pageSubtitle');
+        const verificationPending = document.getElementById('verificationPending');
+        const pendingEmail = document.getElementById('pendingEmail');
+        const resendVerificationBtn = document.getElementById('resendVerificationBtn');
+        const checkVerifiedBtn = document.getElementById('checkVerifiedBtn');
+        const toastContainer = document.getElementById('toastContainer');
+        const forgotLink = document.getElementById('forgotLink');
+        const forgotModal = document.getElementById('forgotModal');
+        const forgotEmail = document.getElementById('forgotEmail');
+        const forgotSubmit = document.getElementById('forgotSubmit');
+        const forgotCancel = document.getElementById('forgotCancel');
+        const forgotSpinner = document.getElementById('forgotSpinner');
+        const forgotText = document.getElementById('forgotText');
+        const loginToggle = document.getElementById('loginPasswordToggle');
+        const signupToggle = document.getElementById('signupPasswordToggle');
+
+        // ----- TOAST SYSTEM -----
+        function showToast(title, message, type = 'info', duration = 5000) {
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="${icons[type] || icons.info}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close"><i class="fas fa-times"></i></button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            toast.querySelector('.toast-close').addEventListener('click', () => removeToast(toast));
+            if (duration > 0) {
+                setTimeout(() => removeToast(toast), duration);
+            }
+        }
+
+        function removeToast(toast) {
+            toast.classList.add('hiding');
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
+        }
+
+        // ----- PASSWORD TOGGLE -----
+        function togglePassword(input, toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                toggleBtn.querySelector('i').className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
+        togglePassword(loginPassword, loginToggle);
+        togglePassword(signupPassword, signupToggle);
+
+        // ----- VALIDATE UMYU EMAIL -----
+        function isUmyuEmail(email) {
+            if (!email) return false;
+            const lowerEmail = email.toLowerCase().trim();
+            return lowerEmail.endsWith('@umyu.edu.ng') || lowerEmail.endsWith('@students.umyu.edu.ng');
+        }
+
+        // ----- TAB TOGGLE (with dynamic messages) -----
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            verificationPending.classList.remove('active');
+            pageTitle.textContent = 'Welcome Back!';
+            pageSubtitle.textContent = 'Sign in to continue your research journey.';
+            document.querySelectorAll('.form-group input').forEach(el => el.classList.remove('error', 'success'));
+        });
+
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            verificationPending.classList.remove('active');
+            pageTitle.textContent = 'Create Your Account';
+            pageSubtitle.textContent = 'Join UMYU Scholar and share your research.';
+            document.querySelectorAll('.form-group input').forEach(el => el.classList.remove('error', 'success'));
+        });
+
+        // ----- SET BUTTON LOADING STATE -----
+        function setButtonLoading(button, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.classList.add('loading');
+            } else {
+                button.disabled = false;
+                button.classList.remove('loading');
+            }
+        }
+
+        // ----- LOGIN HANDLER -----
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+
+            if (!email || !password) {
+                showToast('Missing Fields', 'Please enter both email and password.', 'warning');
+                return;
+            }
+
+            if (!isUmyuEmail(email)) {
+                showToast('Invalid Email', 'Please use your @umyu.edu.ng or @students.umyu.edu.ng email.', 'error');
+                return;
+            }
+
+            setButtonLoading(loginBtn, true);
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await reload(user);
+
+                if (!user.emailVerified) {
+                    await signOut(auth);
+                    showToast('Email Not Verified', 'Please check your inbox and click the verification link before logging in.', 'warning', 8000);
+                    setButtonLoading(loginBtn, false);
+                    return;
+                }
+
+                showToast('Welcome Back!', `Hello ${user.displayName || user.email}, redirecting...`, 'success', 3000);
+                setTimeout(() => window.location.href = 'index.html', 1500);
+
+            } catch (error) {
+                let title = 'Login Failed';
+                let message = 'Please check your credentials and try again.';
+                switch (error.code) {
+                    case 'auth/user-not-found': message = 'No account found with this email. Please sign up first.'; break;
+                    case 'auth/wrong-password': message = 'Incorrect password. Please try again.'; break;
+                    case 'auth/invalid-email': message = 'Invalid email format.'; break;
+                    case 'auth/too-many-requests': message = 'Too many attempts. Please try again later.'; break;
+                    case 'auth/network-request-failed': message = 'Network error. Check your connection.'; break;
+                    default: message = error.message.replace('Firebase: ', '');
+                }
+                showToast(title, message, 'error', 6000);
+                setButtonLoading(loginBtn, false);
+            }
+        });
+
+        // ----- SIGNUP HANDLER -----
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = signupName.value.trim();
+            const email = signupEmail.value.trim();
+            const password = signupPassword.value;
+
+            if (!name || !email || !password) {
+                showToast('Missing Fields', 'Please fill in all fields.', 'warning');
+                return;
+            }
+
+            if (!isUmyuEmail(email)) {
+                showToast('Invalid Email', 'Use @umyu.edu.ng or @students.umyu.edu.ng.', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Weak Password', 'Password must be at least 6 characters.', 'warning');
+                return;
+            }
+
+            setButtonLoading(signupBtn, true);
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Auto-detect role from email
+                const role = email.toLowerCase().includes('@students.') ? 'Student' : 'Staff';
+                await updateProfile(user, { displayName: `${name} (${role})` });
+
+                await sendEmailVerification(user);
+
+                pendingEmail.textContent = email;
+                verificationPending.classList.add('active');
+                signupForm.style.display = 'none';
+
+                await signOut(auth);
+
+                showToast('Verification Sent!', `Check ${email} for the verification link.`, 'success', 6000);
+                setButtonLoading(signupBtn, false);
+
+            } catch (error) {
+                let title = 'Signup Failed';
+                let message = 'Unable to create account.';
+                switch (error.code) {
+                    case 'auth/email-already-in-use': message = 'This email is already registered. Please login.'; break;
+                    case 'auth/invalid-email': message = 'Invalid email format.'; break;
+                    case 'auth/weak-password': message = 'Password too weak. Use at least 6 characters.'; break;
+                    case 'auth/network-request-failed': message = 'Network error. Check your connection.'; break;
+                    case 'auth/too-many-requests': message = 'Too many attempts. Try again later.'; break;
+                    default: message = error.message.replace('Firebase: ', '');
+                }
+                showToast(title, message, 'error', 6000);
+                setButtonLoading(signupBtn, false);
+            }
+        });
+
+        // ----- FORGOT PASSWORD -----
+        forgotLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            forgotEmail.value = '';
+            forgotText.textContent = 'Send Reset Link';
+            forgotSpinner.classList.remove('active');
+            forgotSubmit.disabled = false;
+            forgotModal.classList.add('active');
+        });
+
+        forgotCancel.addEventListener('click', () => {
+            forgotModal.classList.remove('active');
+        });
+
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) forgotModal.classList.remove('active');
+        });
+
+        forgotSubmit.addEventListener('click', async () => {
+            const email = forgotEmail.value.trim();
+            if (!email) {
+                showToast('Missing Email', 'Please enter your email address.', 'warning');
+                return;
+            }
+            if (!isUmyuEmail(email)) {
+                showToast('Invalid Email', 'Please use your @umyu.edu.ng or @students.umyu.edu.ng email.', 'error');
+                return;
+            }
+
+            forgotSubmit.disabled = true;
+            forgotText.textContent = 'Sending...';
+            forgotSpinner.classList.add('active');
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showToast('Reset Link Sent!', `Check ${email} for the password reset link.`, 'success', 5000);
+                forgotModal.classList.remove('active');
+            } catch (error) {
+                let message = 'Failed to send reset email.';
+                if (error.code === 'auth/user-not-found') {
+                    message = 'No account found with this email.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = 'Too many requests. Try again later.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    message = 'Network error. Check your connection.';
+                } else {
+                    message = error.message.replace('Firebase: ', '');
+                }
+                showToast('Reset Failed', message, 'error', 6000);
+            } finally {
+                forgotSubmit.disabled = false;
+                forgotText.textContent = 'Send Reset Link';
+                forgotSpinner.classList.remove('active');
+            }
+        });
+
+        // Enter key on forgot email
+        forgotEmail.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') forgotSubmit.click();
+        });
+
+        // ----- RESEND VERIFICATION -----
+        resendVerificationBtn.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) {
+                showToast('No Pending User', 'Please sign up again.', 'warning');
+                verificationPending.classList.remove('active');
+                signupForm.style.display = 'block';
+                return;
+            }
+            
+            resendVerificationBtn.disabled = true;
+            resendVerificationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            try {
+                await sendEmailVerification(user);
+                showToast('Email Sent!', 'A new verification link has been sent.', 'success', 5000);
+            } catch (error) {
+                let message = 'Failed to resend.';
+                if (error.code === 'auth/too-many-requests') message = 'Too many requests. Wait a moment.';
+                showToast('Failed', message, 'error', 6000);
+            } finally {
+                resendVerificationBtn.disabled = false;
+                resendVerificationBtn.innerHTML = '<i class="fas fa-redo"></i> Resend Verification Email';
+            }
+        });
+
+        // ----- CHECK VERIFICATION -----
+        checkVerifiedBtn.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) {
+                showToast('No Pending User', 'Please sign up again.', 'warning');
+                verificationPending.classList.remove('active');
+                signupForm.style.display = 'block';
+                return;
+            }
+            
+            checkVerifiedBtn.disabled = true;
+            checkVerifiedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            
+            try {
+                await reload(user);
+                if (user.emailVerified) {
+                    showToast('Verified!', 'Your email has been verified. Redirecting...', 'success', 3000);
+                    verificationPending.classList.remove('active');
+                    loginForm.style.display = 'block';
+                    loginTab.click();
+                    loginEmail.value = user.email;
+                    setTimeout(() => window.location.href = 'index.html', 1500);
+                } else {
+                    showToast('Not Verified Yet', 'Click the link in your email or check spam.', 'warning', 5000);
+                }
+            } catch (error) {
+                showToast('Check Failed', 'Could not verify status. Try again.', 'error', 5000);
+            } finally {
+                checkVerifiedBtn.disabled = false;
+                checkVerifiedBtn.innerHTML = '<i class="fas fa-check"></i> I\'ve Verified, Check Now';
+            }
+        });
+
+        // ----- AUTH STATE -----
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                await reload(user);
+                if (user.emailVerified) {
+                    window.location.href = 'index.html';
+                } else {
+                    if (user.email) {
+                        pendingEmail.textContent = user.email;
+                        verificationPending.classList.add('active');
+                        loginForm.style.display = 'none';
+                        signupForm.style.display = 'none';
+                        showToast('Verify Your Email', `A link was sent to ${user.email}. Check your inbox.`, 'info', 8000);
+                    }
+                    await signOut(auth);
+                }
+            }
+        });
+
+        console.log('✅ UMYU Scholar Auth with all features loaded!');
+    </script>
+</body>
+</html>

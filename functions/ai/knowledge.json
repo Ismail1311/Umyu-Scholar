@@ -1,0 +1,122 @@
+{
+  "platform": {
+    "name": "UMYU Scholar",
+    "description": "A digital repository and academic social platform for Umaru Musa Yar'adua University, Katsina.",
+    "purpose": "To preserve, share, and promote academic research from the UMYU community.",
+    "creator": "Ismail Habib Ismail",
+    "creator_role": "Student, Computer Science Education, UMYU",
+    "project_type": "A campus benefit project to help UMYU students and staff share research."
+  },
+
+  "pages": {
+    "home": "index.html",
+    "auth": "auth.html",
+    "upload": "upload.html",
+    "profile": "profile.html",
+    "library": "library.html",
+    "about": "about.html",
+    "contact": "contact.html",
+    "support": "support.html",
+    "privacy": "privacy.html",
+    "terms": "terms.html"
+  },
+
+  "authentication": {
+    "signup": "Go to auth.html. Use your @umyu.edu.ng (staff) or @students.umyu.edu.ng (student) email. You'll receive a verification email. Click the link to verify.",
+    "login": "Go to auth.html. Enter your UMYU email and password.",
+    "logout": "Click the 'Logout' button at the bottom of the left sidebar.",
+    "forgot_password": "On auth.html, click 'Forgot password?'. Enter your email to receive a reset link.",
+    "email_verification": "Check your inbox and spam folder. Click the verification link to activate your account.",
+    "why_verify": "Email verification is required to upload papers and access all features. It confirms you are a real UMYU student or staff.",
+    "email_domains": "Students use @students.umyu.edu.ng. Staff use @umyu.edu.ng. Both are accepted."
+  },
+
+  "upload": {
+    "who_can_upload": "Only UMYU students and staff with verified emails can upload.",
+    "how_to": "1. Sign in. 2. Go to upload.html. 3. Fill in all required fields: Title, Authors, Department, Year, Keywords, Abstract, Author Contact. 4. Upload PDF (max 10MB). 5. Optionally upload software (ZIP/RAR/7z, max 50MB). 6. Click 'Upload Paper'.",
+    "file_types": "PDF required (max 10MB). ZIP, RAR, 7z optional for software (max 50MB).",
+    "multiple_authors": "Click 'Add Author' to include co-authors. At least one author is required.",
+    "abstract_requirements": "Abstract must be between 150 and 500 words.",
+    "contact_info": "Provide an email or phone number so readers can contact you.",
+    "troubleshooting": "If your upload doesn't appear: check email verification, use UMYU email, fill all required fields, ensure PDF is under 10MB."
+  },
+
+  "download": {
+    "how_to": "Browse papers on the homepage or use search. Click the download button (⬇️) on paper cards or on the paper detail page.",
+    "free": "All papers are free to download for research and personal use. No account needed to download.",
+    "software": "If a paper has software, look for the 'Software' badge. Click 'Download Software' to get the archive.",
+    "citation": "You must properly cite any papers you use in your own work."
+  },
+
+  "interactions": {
+    "like": "Click the ❤️ icon on any paper. Requires login.",
+    "unlike": "Click the ❤️ icon again to remove your like.",
+    "bookmark": "Click the ⭐ icon to save papers to your library. Requires login.",
+    "remove_bookmark": "Click the ⭐ icon again or go to library.html and click 'Remove'.",
+    "library": "Access all bookmarked papers at library.html."
+  },
+
+  "profile": {
+    "view": "Go to profile.html to see your uploaded papers and statistics.",
+    "delete_paper": "Go to profile.html, find your paper, click 'Delete'. Confirm to delete.",
+    "stats": "Your profile shows total papers and how many have software.",
+    "delete_account": "Contact support at contact.html or email umyuscholar@gmail.com to request account deletion."
+  },
+
+  "search": {
+    "how_to": "Use the search bar on the homepage to search by title, author name, or department.",
+    "filters": "Use the filter icon (⚙️) next to the search bar to filter by year.",
+    "browse": "Scroll down on the homepage to see the latest uploads. Click 'Load More' to see more papers."
+  },
+
+  "support": {
+    "contact_page": "Go to contact.html to send a message.",
+    "email": "umyuscholar@gmail.com",
+    "phone": "0813 998 5375",
+    "whatsapp": "0813 998 5375",
+    "response_time": "We respond within 24-48 hours during business days.",
+    "faq": "Visit support.html for frequently asked questions."
+  },
+
+  "legal": {
+    "privacy_policy": "The Privacy Policy explains how we collect, use, and protect your data. Read it at privacy.html.",
+    "privacy_summary": "We collect your name, email, uploaded content, and interaction data. We use it to provide and improve the platform. We never sell your data.",
+    "terms_of_use": "The Terms of Use define the rules for using UMYU Scholar. Read them at terms.html.",
+    "terms_summary": "You must be 18 or older. You retain copyright of your work. You agree not to upload plagiarized or copyrighted content. Accounts violating terms may be terminated."
+  },
+
+  "general": {
+    "what_is": "UMYU Scholar is a digital repository where UMYU students and staff can share academic papers, research projects, theses, and software source code.",
+    "who_can_upload": "Only UMYU students and staff with verified @umyu.edu.ng or @students.umyu.edu.ng emails can upload.",
+    "who_can_download": "Anyone can browse and download papers for free. No account needed.",
+    "why_use": "Share your research, build your academic portfolio, get cited, help future UMYU students.",
+    "software_projects": "If your research includes software, you can upload a ZIP/RAR/7z file with your paper."
+  },
+
+  "departments": [
+    "Computer Science Education",
+    "Biology Education",
+    "Chemistry Education",
+    "Physics Education",
+    "Mathematics Education",
+    "English Education",
+    "Islamic Studies Education",
+    "Economics",
+    "Political Science",
+    "Sociology",
+    "Mass Communication",
+    "Arabic",
+    "History",
+    "Computer Science",
+    "Biochemistry",
+    "Microbiology",
+    "Chemistry",
+    "Physics",
+    "Mathematics",
+    "Accounting",
+    "Business Administration",
+    "Public Administration",
+    "Law",
+    "Other"
+  ]
+}

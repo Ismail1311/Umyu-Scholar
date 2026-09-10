@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMYU Scholar - Paper Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+            --primary-color: #1a7a3c;
+            --primary-light: #2a9c4a;
+            --primary-dark: #0f5a2a;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        body {
+            background: #f4f6f9;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ---------- SIDEBAR / DRAWER ---------- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .sidebar-logo {
+            text-align: center;
+            padding: 10px 0 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .sidebar-logo img {
+            max-height: 50px;
+            width: auto;
+        }
+        .sidebar-logo .site-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-user {
+            padding: 20px 20px 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar-user:hover {
+            background: #f8f9fa;
+        }
+        .sidebar-user .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e9ecef;
+            border: 2px solid var(--primary-color);
+        }
+        .sidebar-user .user-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar-user .user-info .name {
+            font-weight: 600;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-user .user-info .email {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 15px 0;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 24px;
+            color: #333;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover {
+            background: #f1f3f5;
+            border-left-color: var(--primary-color);
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #495057;
+        }
+        .sidebar-nav a.active {
+            background: #e9ecef;
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .sidebar-nav a.hidden-tab {
+            display: none;
+        }
+        .sidebar-bottom {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        .sidebar-bottom a {
+            display: block;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        .sidebar-bottom a:hover {
+            color: var(--primary-color);
+        }
+        .logout-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+        .drawer-overlay.active {
+            display: block;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- MOBILE HEADER ---------- */
+        .mobile-header {
+            display: none;
+            background: white;
+            padding: 14px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-header .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        .mobile-header .mobile-logo img {
+            max-height: 35px;
+        }
+
+        /* ---------- PAPER DETAIL ---------- */
+        .page-content {
+            padding: 30px 30px 40px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 25px;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: var(--primary-light);
+        }
+        .paper-container {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+        }
+        .paper-header {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .paper-header h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .paper-header .badge {
+            display: inline-block;
+            background: #e9ecef;
+            color: var(--primary-color);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 4px;
+        }
+        .paper-header .badge i {
+            margin-right: 4px;
+        }
+        .paper-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 25px;
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 15px;
+        }
+        .paper-meta .label {
+            font-weight: 600;
+            color: #333;
+        }
+        .paper-meta .authors {
+            font-style: italic;
+        }
+        .paper-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .paper-keywords .keyword {
+            background: #f1f3f5;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #495057;
+        }
+        .paper-section {
+            margin-bottom: 22px;
+        }
+        .paper-section h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .paper-section h3 i {
+            font-size: 18px;
+        }
+        .paper-section .abstract-text {
+            line-height: 1.7;
+            color: #333;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+        .paper-section .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8f9fa;
+            padding: 12px 18px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .paper-section .contact-info i {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        .paper-section .contact-info .contact-text {
+            font-size: 15px;
+            color: #333;
+            word-break: break-all;
+        }
+        .paper-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            border-top: 2px solid #e9ecef;
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+        .paper-actions .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 2px solid #e9ecef;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .paper-actions .action-btn:hover {
+            background: #f1f3f5;
+            border-color: #dee2e6;
+        }
+        .paper-actions .action-btn i {
+            font-size: 18px;
+        }
+        .paper-actions .action-btn.liked {
+            border-color: #dc3545;
+            background: #fff5f5;
+            color: #dc3545;
+        }
+        .paper-actions .action-btn.liked i {
+            color: #dc3545;
+        }
+        .paper-actions .action-btn.bookmarked {
+            border-color: #ffc107;
+            background: #fffbf0;
+            color: #856404;
+        }
+        .paper-actions .action-btn.bookmarked i {
+            color: #ffc107;
+        }
+        .paper-actions .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .paper-actions .action-btn .count {
+            min-width: 16px;
+            text-align: center;
+        }
+        .paper-actions .download-btn {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .paper-actions .download-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        .paper-actions .download-btn i {
+            color: var(--primary-color);
+        }
+        .paper-actions .download-btn:hover i {
+            color: white;
+        }
+        .paper-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .paper-footer .uploader {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .paper-footer .uploader i {
+            color: var(--primary-color);
+        }
+        .paper-footer .views {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .paper-footer .views i {
+            color: var(--primary-color);
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 99999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            font-size: 16px;
+            animation: popIn 0.3s ease;
+            display: none;
+        }
+        .toast-notification.show {
+            display: block;
+        }
+        .toast-notification.error {
+            background: #dc3545;
+        }
+        .toast-notification.info {
+            background: #0d6efd;
+        }
+        @keyframes popIn {
+            from { transform: translateX(-50%) scale(0.9); opacity: 0; }
+            to { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        /* ---------- CUSTOM CONFIRM ---------- */
+        .custom-confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-confirm-overlay.active {
+            display: flex;
+        }
+        .custom-confirm-box {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            padding: 35px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+        .custom-confirm-box .icon {
+            font-size: 48px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .custom-confirm-box h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .custom-confirm-box p {
+            color: #495057;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .custom-confirm-box .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .custom-confirm-box .btn-group button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .custom-confirm-box .btn-group .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .custom-confirm-box .btn-group .btn-cancel:hover {
+            background: #dee2e6;
+        }
+        .custom-confirm-box .btn-group .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .custom-confirm-box .btn-group .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-collapsed);
+                padding: 15px 0;
+            }
+            .sidebar .sidebar-logo img { max-height: 35px; }
+            .sidebar .sidebar-logo .site-name { display: none; }
+            .sidebar .sidebar-user .user-info { display: none; }
+            .sidebar .sidebar-user { justify-content: center; padding: 15px 0; }
+            .sidebar .sidebar-user .avatar-img { width: 40px; height: 40px; }
+            .sidebar-nav a { padding: 14px 0; justify-content: center; }
+            .sidebar-nav a span { display: none; }
+            .sidebar-nav a i { font-size: 22px; margin: 0; }
+            .sidebar-bottom a { text-align: center; font-size: 11px; }
+            .logout-btn { font-size: 12px; }
+            .main-content { margin-left: var(--sidebar-collapsed); }
+            .paper-container { padding: 25px; }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-header {
+                display: flex;
+            }
+            .page-content {
+                padding: 16px;
+            }
+            .paper-container {
+                padding: 20px;
+            }
+            .paper-header h1 {
+                font-size: 22px;
+            }
+            .paper-meta {
+                font-size: 14px;
+                gap: 8px 16px;
+            }
+            .paper-actions .action-btn {
+                padding: 8px 14px;
+                font-size: 14px;
+            }
+            .paper-footer {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            .toast-notification {
+                bottom: 20px;
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 90%;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .drawer-overlay { display: none !important; }
+            .mobile-header { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR / DRAWER -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <img src="logo.png" alt="UMYU Scholar Logo">
+            <div class="site-name">UMYU Scholar</div>
+        </div>
+        <a href="auth.html" class="sidebar-user" id="sidebarUser">
+            <img src="https://ui-avatars.com/api/?name=Guest&background=1a7a3c&color=fff&size=48" alt="Avatar" class="avatar-img" id="userAvatar">
+            <div class="user-info">
+                <div class="name" id="userDisplayName">Guest</div>
+                <div class="email" id="userDisplayEmail">Not signed in</div>
+            </div>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="profile.html" id="profileLink" class="hidden-tab"><i class="fas fa-user"></i><span>My Profile</span></a>
+            <a href="library.html" id="libraryLink" class="hidden-tab"><i class="fas fa-bookmark"></i><span>My Library</span></a>
+            <a href="upload.html" id="uploadLink" class="hidden-tab"><i class="fas fa-upload"></i><span>Upload</span></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i><span>About</span></a>
+            <a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            <a href="support.html"><i class="fas fa-question-circle"></i><span>Support</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+            <a href="terms.html"><i class="fas fa-file-contract"></i> Terms of Use</a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- OVERLAY -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- MOBILE HEADER -->
+        <header class="mobile-header">
+            <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+            <div class="mobile-logo"><img src="logo.png" alt="UMYU Scholar"></div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content" id="pageContent">
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+            <div class="paper-container" id="paperContainer">
+                <!-- Loading state -->
+                <div id="loadingState" style="text-align:center;padding:40px 0;">
+                    <div class="icon"><i class="fas fa-spinner fa-pulse" style="font-size:48px;color:var(--primary-color);"></i></div>
+                    <h3 style="margin-top:16px;color:#495057;">Loading paper...</h3>
+                </div>
+
+                <!-- Error state -->
+                <div id="errorState" style="display:none;text-align:center;padding:40px 0;">
+                    <div class="icon"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#dc3545;"></i></div>
+                    <h3 style="margin-top:16px;color:#343a40;">Paper not found</h3>
+                    <p style="color:#6c757d;">The paper you're looking for doesn't exist or has been removed.</p>
+                    <a href="index.html" class="back-link" style="margin-top:16px;justify-content:center;"><i class="fas fa-arrow-left"></i> Return to Home</a>
+                </div>
+
+                <!-- Paper content (hidden by default) -->
+                <div id="paperContent" style="display:none;">
+                    <!-- Header -->
+                    <div class="paper-header">
+                        <h1 id="paperTitle">Paper Title</h1>
+                        <div id="paperBadge"></div>
+                        <div class="paper-meta">
+                            <span class="authors" id="paperAuthors">Authors</span>
+                            <span id="paperDeptYear">Department • Year</span>
+                        </div>
+                        <div class="paper-keywords" id="paperKeywords"></div>
+                    </div>
+
+                    <!-- Abstract -->
+                    <div class="paper-section">
+                        <h3><i class="fas fa-align-left"></i> Abstract</h3>
+                        <div class="abstract-text" id="paperAbstract">Abstract text here...</div>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="paper-section">
+                        <h3><i class="fas fa-envelope"></i> Contact Author</h3>
+                        <div class="contact-info">
+                            <i class="fas fa-user"></i>
+                            <span class="contact-text" id="paperContact">Not provided</span>
+                        </div>
+                    </div>
+
+                    <!-- Downloads -->
+                    <div class="paper-section">
+                        <h3><i class="fas fa-download"></i> Downloads</h3>
+                        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;">
+                            <a href="#" id="pdfDownloadBtn" class="action-btn download-btn" target="_blank">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                            <a href="#" id="softwareDownloadBtn" class="action-btn download-btn" style="display:none;" target="_blank">
+                                <i class="fas fa-archive"></i> Download Software
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="paper-actions">
+                        <button class="action-btn" id="likeBtn">
+                            <i class="fas fa-heart"></i>
+                            <span class="count" id="likeCount">0</span>
+                        </button>
+                        <button class="action-btn" id="bookmarkBtn">
+                            <i class="fas fa-bookmark"></i> Bookmark
+                        </button>
+                        <span style="flex:1;"></span>
+                        <span style="color:#6c757d;font-size:14px;display:flex;align-items:center;gap:6px;">
+                            <i class="fas fa-eye" style="color:var(--primary-color);"></i>
+                            <span id="viewCount">0</span> views
+                        </span>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="paper-footer">
+                        <span class="uploader"><i class="fas fa-user-edit"></i> Uploaded by: <strong id="uploaderName">Unknown</strong></span>
+                        <span class="uploader"><i class="fas fa-calendar-alt"></i> <span id="uploadDate">Unknown date</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast-notification" id="toastNotification"></div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div class="custom-confirm-overlay" id="customConfirmOverlay">
+        <div class="custom-confirm-box">
+            <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
+            <h3 id="confirmTitle">Are you sure?</h3>
+            <p id="confirmMessage">This action cannot be undone.</p>
+            <div class="btn-group">
+                <button class="btn-cancel" id="confirmCancel">Cancel</button>
+                <button class="btn-danger" id="confirmOk">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ----- IMPORTS -----
+        import { 
+            db, auth, 
+            doc, getDoc, updateDoc, increment, arrayUnion, arrayRemove,
+            setDoc, deleteDoc, collection, getDocs,
+            onAuthStateChanged, signOut
+        } from './js/firebase-config.js';
+
+        // ----- DOM REFS -----
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('drawerOverlay');
+        const hamburger = document.getElementById('hamburgerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const uploadLink = document.getElementById('uploadLink');
+        const profileLink = document.getElementById('profileLink');
+        const libraryLink = document.getElementById('libraryLink');
+        const sidebarUser = document.getElementById('sidebarUser');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userDisplayEmail = document.getElementById('userDisplayEmail');
+        const toastNotification = document.getElementById('toastNotification');
+
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const paperContent = document.getElementById('paperContent');
+
+        const paperTitle = document.getElementById('paperTitle');
+        const paperBadge = document.getElementById('paperBadge');
+        const paperAuthors = document.getElementById('paperAuthors');
+        const paperDeptYear = document.getElementById('paperDeptYear');
+        const paperKeywords = document.getElementById('paperKeywords');
+        const paperAbstract = document.getElementById('paperAbstract');
+        const paperContact = document.getElementById('paperContact');
+        const pdfDownloadBtn = document.getElementById('pdfDownloadBtn');
+        const softwareDownloadBtn = document.getElementById('softwareDownloadBtn');
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+        const bookmarkBtn = document.getElementById('bookmarkBtn');
+        const viewCount = document.getElementById('viewCount');
+        const uploaderName = document.getElementById('uploaderName');
+        const uploadDate = document.getElementById('uploadDate');
+
+        const confirmOverlay = document.getElementById('customConfirmOverlay');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmOk = document.getElementById('confirmOk');
+        const confirmCancel = document.getElementById('confirmCancel');
+
+        // ----- STATE -----
+        let currentUser = null;
+        let paperId = null;
+        let paperData = null;
+        let isLiked = false;
+        let isBookmarked = false;
+        let likeCountValue = 0;
+        let viewCountValue = 0;
+
+        // ----- HELPER: Check UMYU Email -----
+        function isUmyuEmail(email) {
+            if (!email) return false;
+            const lowerEmail = email.toLowerCase().trim();
+            return lowerEmail.endsWith('@umyu.edu.ng') || lowerEmail.endsWith('@students.umyu.edu.ng');
+        }
+
+        // ----- HELPER: Get clean display name -----
+        function getCleanDisplayName(displayName) {
+            if (!displayName) return 'Guest';
+            return displayName.replace(/\s*\([^)]*\)\s*/g, '').trim();
+        }
+
+        // ----- TOAST -----
+        function showToast(message, type = 'success', duration = 3000) {
+            toastNotification.textContent = message;
+            toastNotification.className = 'toast-notification show ' + type;
+            clearTimeout(toastNotification._timeout);
+            toastNotification._timeout = setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, duration);
+        }
+
+        // ----- SIDE DRAWER -----
+        function openDrawer() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+        function closeDrawer() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        hamburger.addEventListener('click', openDrawer);
+        overlay.addEventListener('click', closeDrawer);
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 767) closeDrawer();
+            });
+        });
+
+        // ----- CUSTOM CONFIRM -----
+        function showConfirm(title, message, onConfirm) {
+            confirmTitle.textContent = title;
+            confirmMessage.textContent = message;
+            confirmOverlay.classList.add('active');
+            
+            const handleConfirm = () => {
+                confirmOverlay.classList.remove('active');
+                confirmOk.removeEventListener('click', handleConfirm);
+                confirmCancel.removeEventListener('click', handleCancel);
+                onConfirm();
+            };
+            
+            const handleCancel = () => {
+                confirmOverlay.classList.remove('active');
+                confirmOk.removeEventListener('click', handleConfirm);
+                confirmCancel.removeEventListener('click', handleCancel);
+            };
+            
+            confirmOk.addEventListener('click', handleConfirm);
+            confirmCancel.addEventListener('click', handleCancel);
+            
+            confirmOverlay.addEventListener('click', (e) => {
+                if (e.target === confirmOverlay) {
+                    confirmOverlay.classList.remove('active');
+                    confirmOk.removeEventListener('click', handleConfirm);
+                    confirmCancel.removeEventListener('click', handleCancel);
+                }
+            });
+        }
+
+        // ----- FETCH PAPER DATA -----
+        async function fetchPaper(id) {
+            try {
+                const paperRef = doc(db, 'papers', id);
+                const paperSnap = await getDoc(paperRef);
+                
+                if (!paperSnap.exists()) {
+                    loadingState.style.display = 'none';
+                    errorState.style.display = 'block';
+                    return null;
+                }
+                
+                return { id: paperSnap.id, data: paperSnap.data() };
+            } catch (error) {
+                console.error('Error fetching paper:', error);
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                return null;
+            }
+        }
+
+        // ----- RENDER PAPER -----
+        function renderPaper(paper) {
+            const data = paper.data;
+            
+            // Title
+            paperTitle.textContent = data.title || 'Untitled';
+            
+            // Badge for software
+            if (data.hasSoftware && data.softwareUrl) {
+                paperBadge.innerHTML = `<span class="badge"><i class="fas fa-code"></i> Software included</span>`;
+            } else {
+                paperBadge.innerHTML = '';
+            }
+            
+            // Authors
+            if (data.authors && Array.isArray(data.authors) && data.authors.length > 0) {
+                paperAuthors.textContent = data.authors.join(', ');
+            } else {
+                paperAuthors.textContent = 'Unknown Author';
+            }
+            
+            // Department & Year
+            paperDeptYear.textContent = `${data.department || 'N/A'} • ${data.year || 'N/A'}`;
+            
+            // Keywords
+            if (data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0) {
+                paperKeywords.innerHTML = data.keywords.map(k => `<span class="keyword">${k}</span>`).join('');
+            } else {
+                paperKeywords.innerHTML = '';
+            }
+            
+            // Abstract
+            paperAbstract.textContent = data.abstract || 'No abstract provided.';
+            
+            // Contact
+            paperContact.textContent = data.contactInfo || 'Not provided';
+            
+            // PDF Download
+            if (data.pdfUrl) {
+                pdfDownloadBtn.href = data.pdfUrl;
+                pdfDownloadBtn.style.display = 'inline-flex';
+            } else {
+                pdfDownloadBtn.style.display = 'none';
+            }
+            
+            // Software Download
+            if (data.hasSoftware && data.softwareUrl) {
+                softwareDownloadBtn.href = data.softwareUrl;
+                softwareDownloadBtn.style.display = 'inline-flex';
+            } else {
+                softwareDownloadBtn.style.display = 'none';
+            }
+            
+            // Like count
+            likeCountValue = data.likesCount || 0;
+            likeCount.textContent = likeCountValue;
+            
+            // View count
+            viewCountValue = data.views || 0;
+            viewCount.textContent = viewCountValue;
+            
+            // Uploader
+            uploaderName.textContent = data.uploaderName || 'Unknown';
+            
+            // Upload date
+            if (data.timestamp) {
+                const date = data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
+                uploadDate.textContent = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else {
+                uploadDate.textContent = 'Unknown date';
+            }
+            
+            // Store for later
+            paperData = data;
+            
+            // Show content
+            loadingState.style.display = 'none';
+            errorState.style.display = 'none';
+            paperContent.style.display = 'block';
+        }
+
+        // ----- INCREMENT VIEWS -----
+        async function incrementViews(paperId) {
+            try {
+                const paperRef = doc(db, 'papers', paperId);
+                await updateDoc(paperRef, {
+                    views: increment(1)
+                });
+                viewCountValue++;
+                viewCount.textContent = viewCountValue;
+            } catch (error) {
+                console.error('Error incrementing views:', error);
+            }
+        }
+
+        // ----- CHECK BOOKMARK STATUS -----
+        async function checkBookmarkStatus(paperId, userId) {
+            try {
+                const bookmarkRef = doc(db, 'users', userId, 'bookmarks', paperId);
+                const bookmarkSnap = await getDoc(bookmarkRef);
+                return bookmarkSnap.exists();
+            } catch (error) {
+                console.error('Error checking bookmark:', error);
+                return false;
+            }
+        }
+
+        // ----- UPDATE LIKE BUTTON -----
+        function updateLikeButton() {
+            if (isLiked) {
+                likeBtn.classList.add('liked');
+            } else {
+                likeBtn.classList.remove('liked');
+            }
+            likeCount.textContent = likeCountValue;
+        }
+
+        // ----- UPDATE BOOKMARK BUTTON -----
+        function updateBookmarkButton() {
+            if (isBookmarked) {
+                bookmarkBtn.classList.add('bookmarked');
+                bookmarkBtn.innerHTML = `<i class="fas fa-bookmark"></i> Bookmarked`;
+            } else {
+                bookmarkBtn.classList.remove('bookmarked');
+                bookmarkBtn.innerHTML = `<i class="fas fa-bookmark"></i> Bookmark`;
+            }
+        }
+
+        // ----- HANDLE LIKE -----
+        async function handleLike() {
+            if (!currentUser) {
+                showToast('Please sign in to like papers.', 'info', 3000);
+                return;
+            }
+
+            try {
+                const paperRef = doc(db, 'papers', paperId);
+                if (isLiked) {
+                    await updateDoc(paperRef, {
+                        likedBy: arrayRemove(currentUser.uid),
+                        likesCount: increment(-1)
+                    });
+                    isLiked = false;
+                    likeCountValue--;
+                } else {
+                    await updateDoc(paperRef, {
+                        likedBy: arrayUnion(currentUser.uid),
+                        likesCount: increment(1)
+                    });
+                    isLiked = true;
+                    likeCountValue++;
+                }
+                updateLikeButton();
+            } catch (error) {
+                console.error('Like error:', error);
+                showToast('Failed to update like. Please try again.', 'error', 3000);
+            }
+        }
+
+        // ----- HANDLE BOOKMARK -----
+        async function handleBookmark() {
+            if (!currentUser) {
+                showToast('Please sign in to bookmark papers.', 'info', 3000);
+                return;
+            }
+
+            try {
+                const bookmarkRef = doc(db, 'users', currentUser.uid, 'bookmarks', paperId);
+                if (isBookmarked) {
+                    await deleteDoc(bookmarkRef);
+                    isBookmarked = false;
+                    showToast('Bookmark removed.', 'info', 2000);
+                } else {
+                    await setDoc(bookmarkRef, {
+                        paperId: paperId,
+                        savedAt: new Date().toISOString()
+                    });
+                    isBookmarked = true;
+                    showToast('Paper bookmarked!', 'success', 2000);
+                }
+                updateBookmarkButton();
+            } catch (error) {
+                console.error('Bookmark error:', error);
+                showToast('Failed to update bookmark. Please try again.', 'error', 3000);
+            }
+        }
+
+        // ----- HANDLE DOWNLOAD (increment count) -----
+        async function handleDownload() {
+            try {
+                const paperRef = doc(db, 'papers', paperId);
+                await updateDoc(paperRef, {
+                    downloads: increment(1)
+                });
+                // No UI update needed for downloads on paper page
+            } catch (error) {
+                console.error('Download count error:', error);
+            }
+        }
+
+        // ----- INIT PAPER -----
+        async function initPaper() {
+            // Get paper ID from URL
+            const params = new URLSearchParams(window.location.search);
+            paperId = params.get('id');
+            
+            if (!paperId) {
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                return;
+            }
+
+            // Fetch paper
+            const result = await fetchPaper(paperId);
+            if (!result) return;
+
+            renderPaper(result);
+
+            // Increment views
+            await incrementViews(paperId);
+
+            // Check if user is logged in
+            if (currentUser) {
+                // Check if liked
+                const likedBy = paperData.likedBy || [];
+                isLiked = likedBy.includes(currentUser.uid);
+                
+                // Check if bookmarked
+                isBookmarked = await checkBookmarkStatus(paperId, currentUser.uid);
+                
+                updateLikeButton();
+                updateBookmarkButton();
+            }
+
+            // Attach event listeners
+            likeBtn.addEventListener('click', handleLike);
+            bookmarkBtn.addEventListener('click', handleBookmark);
+            pdfDownloadBtn.addEventListener('click', handleDownload);
+            softwareDownloadBtn.addEventListener('click', handleDownload);
+
+            // Update bookmark button for guest
+            if (!currentUser) {
+                bookmarkBtn.disabled = true;
+                likeBtn.disabled = true;
+                bookmarkBtn.title = 'Sign in to bookmark';
+                likeBtn.title = 'Sign in to like';
+            }
+        }
+
+        // ----- LOGOUT -----
+        logoutBtn.addEventListener('click', () => {
+            showConfirm(
+                'Logout Confirmation',
+                'Are you sure you want to logout? You will need to sign in again to upload or like papers.',
+                async () => {
+                    try {
+                        await signOut(auth);
+                        showToast('✅ Logged out successfully!', 'success', 3000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } catch (error) {
+                        showToast('❌ Logout failed. Please try again.', 'error', 3000);
+                    }
+                }
+            );
+        });
+
+        // ----- AUTH STATE -----
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                const cleanName = getCleanDisplayName(displayName);
+                userDisplayName.textContent = cleanName;
+                userDisplayEmail.textContent = user.email;
+
+                if (user.photoURL) {
+                    userAvatar.src = user.photoURL;
+                } else {
+                    userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=1a7a3c&color=fff&size=48`;
+                }
+
+                logoutBtn.style.display = 'block';
+                profileLink.classList.remove('hidden-tab');
+                libraryLink.classList.remove('hidden-tab');
+                
+                if (isUmyuEmail(user.email)) {
+                    uploadLink.classList.remove('hidden-tab');
+                } else {
+                    uploadLink.classList.add('hidden-tab');
+                }
+
+                sidebarUser.removeAttribute('href');
+                sidebarUser.style.cursor = 'default';
+
+                // Re-init if paper already loaded
+                if (paperId && paperData) {
+                    // Update like/bookmark status
+                    const likedBy = paperData.likedBy || [];
+                    isLiked = likedBy.includes(user.uid);
+                    checkBookmarkStatus(paperId, user.uid).then(status => {
+                        isBookmarked = status;
+                        updateLikeButton();
+                        updateBookmarkButton();
+                    });
+                    // Enable buttons
+                    bookmarkBtn.disabled = false;
+                    likeBtn.disabled = false;
+                }
+
+            } else {
+                const cleanName = 'Guest';
+                userDisplayName.textContent = cleanName;
+                userDisplayEmail.textContent = 'Not signed in';
+                userAvatar.src = 'https://ui-avatars.com/api/?name=Guest&background=1a7a3c&color=fff&size=48';
+
+                logoutBtn.style.display = 'none';
+                profileLink.classList.add('hidden-tab');
+                libraryLink.classList.add('hidden-tab');
+                uploadLink.classList.add('hidden-tab');
+
+                sidebarUser.href = 'auth.html';
+                sidebarUser.style.cursor = 'pointer';
+
+                // Disable interaction buttons
+                bookmarkBtn.disabled = true;
+                likeBtn.disabled = true;
+                bookmarkBtn.title = 'Sign in to bookmark';
+                likeBtn.title = 'Sign in to like';
+            }
+        });
+
+        // ----- START -----
+        // Wait for auth to resolve before loading
+        onAuthStateChanged(auth, () => {
+            // Auth state already handled above, but we need to init after auth is ready
+            // Use a small delay to ensure auth state is processed
+            setTimeout(() => {
+                initPaper();
+            }, 100);
+        });
+
+        console.log('✅ UMYU Scholar Paper Detail page loaded successfully!');
+    </script>
+</body>
+</html>
