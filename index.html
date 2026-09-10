@@ -6,12 +6,7 @@
     <title>UMYU Scholar - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         :root {
             --sidebar-width: 280px;
             --sidebar-collapsed: 80px;
@@ -20,696 +15,137 @@
             --primary-dark: #0f5a2a;
             --shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        body {
-            background: #f4f6f9;
-            display: flex;
-            min-height: 100vh;
-        }
+        body { background: #f4f6f9; display: flex; min-height: 100vh; }
 
-        /* ---------- SIDEBAR / DRAWER ---------- */
+        /* SIDEBAR */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background: #ffffff;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease-in-out;
-            overflow-y: auto;
-            padding: 20px 0;
+            position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-width);
+            background: #ffffff; box-shadow: 2px 0 10px rgba(0,0,0,0.08); z-index: 1000;
+            display: flex; flex-direction: column; transition: transform 0.3s ease-in-out;
+            overflow-y: auto; padding: 20px 0;
         }
-        .sidebar-logo {
-            text-align: center;
-            padding: 10px 0 15px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .sidebar-logo img {
-            max-height: 50px;
-            width: auto;
-        }
-        .sidebar-logo .site-name {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--primary-color);
-            margin-top: 4px;
-            letter-spacing: 0.5px;
-        }
-        .sidebar-user {
-            padding: 20px 20px 15px 20px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .sidebar-user:hover {
-            background: #f8f9fa;
-        }
-        .sidebar-user .avatar-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #e9ecef;
-            border: 2px solid var(--primary-color);
-        }
-        .sidebar-user .user-info {
-            flex: 1;
-            overflow: hidden;
-        }
-        .sidebar-user .user-info .name {
-            font-weight: 600;
-            font-size: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .sidebar-user .user-info .email {
-            font-size: 12px;
-            color: #6c757d;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .sidebar-nav {
-            flex: 1;
-            padding: 15px 0;
-        }
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 24px;
-            color: #333;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            transition: background 0.2s;
-            border-left: 3px solid transparent;
-        }
-        .sidebar-nav a:hover {
-            background: #f1f3f5;
-            border-left-color: var(--primary-color);
-        }
-        .sidebar-nav a i {
-            width: 20px;
-            text-align: center;
-            font-size: 18px;
-            color: #495057;
-        }
-        .sidebar-nav a.active {
-            background: #e9ecef;
-            border-left-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        .sidebar-nav a.hidden-tab {
-            display: none;
-        }
-        .sidebar-bottom {
-            padding: 15px 20px;
-            border-top: 1px solid #e9ecef;
-        }
-        .sidebar-bottom a {
-            display: block;
-            padding: 8px 0;
-            font-size: 13px;
-            color: #6c757d;
-            text-decoration: none;
-        }
-        .sidebar-bottom a:hover {
-            color: var(--primary-color);
-        }
-        .logout-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            display: none;
-            transition: background 0.2s;
-        }
-        .logout-btn:hover {
-            background: #c82333;
-        }
+        .sidebar-logo { text-align: center; padding: 10px 0 15px 0; border-bottom: 1px solid #e9ecef; }
+        .sidebar-logo img { max-height: 50px; width: auto; }
+        .sidebar-logo .site-name { font-weight: 700; font-size: 16px; color: var(--primary-color); margin-top: 4px; letter-spacing: 0.5px; }
+        .sidebar-user { padding: 20px 20px 15px 20px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; cursor: pointer; transition: background 0.2s; }
+        .sidebar-user:hover { background: #f8f9fa; }
+        .sidebar-user .avatar-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #e9ecef; border: 2px solid var(--primary-color); }
+        .sidebar-user .user-info { flex: 1; overflow: hidden; }
+        .sidebar-user .user-info .name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-user .user-info .email { font-size: 12px; color: #6c757d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-nav { flex: 1; padding: 15px 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 14px; padding: 12px 24px; color: #333; text-decoration: none; font-size: 15px; font-weight: 500; transition: background 0.2s; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #f1f3f5; border-left-color: var(--primary-color); }
+        .sidebar-nav a i { width: 20px; text-align: center; font-size: 18px; color: #495057; }
+        .sidebar-nav a.active { background: #e9ecef; border-left-color: var(--primary-color); color: var(--primary-color); }
+        .sidebar-nav a.hidden-tab { display: none; }
+        .sidebar-bottom { padding: 15px 20px; border-top: 1px solid #e9ecef; }
+        .sidebar-bottom a { display: block; padding: 8px 0; font-size: 13px; color: #6c757d; text-decoration: none; }
+        .sidebar-bottom a:hover { color: var(--primary-color); }
+        .logout-btn { margin-top: 10px; width: 100%; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: none; transition: background 0.2s; }
+        .logout-btn:hover { background: #c82333; }
 
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            z-index: 999;
-        }
-        .drawer-overlay.active {
-            display: block;
-        }
+        .drawer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; }
+        .drawer-overlay.active { display: block; }
 
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        .main-content { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* ---------- MOBILE HEADER ---------- */
-        .mobile-header {
-            display: none;
-            background: white;
-            padding: 14px 20px;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .mobile-header .hamburger {
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--primary-color);
-        }
-        .mobile-header .mobile-logo img {
-            max-height: 35px;
-        }
+        /* MOBILE HEADER */
+        .mobile-header { display: none; background: white; padding: 14px 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; align-items: center; justify-content: space-between; }
+        .mobile-header .hamburger { font-size: 24px; cursor: pointer; color: var(--primary-color); }
+        .mobile-header .mobile-logo img { max-height: 35px; }
 
-        /* ---------- HERO SECTION ---------- */
-        .hero {
-            position: relative;
-            width: 100%;
-            min-height: 42vh;
-            max-height: 55vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary-color);
-            overflow: visible;
-        }
-        .hero img.hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.35;
-        }
-        .hero-overlay {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: white;
-            padding: 20px;
-            max-width: 850px;
-            width: 100%;
-        }
-        .hero-overlay h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .hero-overlay p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-        .search-container {
-            display: flex;
-            background: white;
-            border-radius: 50px;
-            overflow: visible;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .search-container input {
-            flex: 1;
-            padding: 14px 22px;
-            border: none;
-            outline: none;
-            font-size: 15px;
-            color: #333;
-            border-radius: 50px 0 0 50px;
-            background: transparent;
-        }
-        .search-container button {
-            background: var(--primary-color);
-            border: none;
-            padding: 0 22px;
-            color: white;
-            font-size: 17px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .search-container button:hover {
-            background: var(--primary-light);
-        }
-        .search-container .filter-btn {
-            background: #e9ecef;
-            color: #333;
-            padding: 0 16px;
-            border-left: 1px solid #ccc;
-            border-radius: 0 50px 50px 0;
-            position: relative;
-        }
-        .search-container .filter-btn:hover {
-            background: #dee2e6;
-        }
+        /* HERO */
+        .hero { position: relative; width: 100%; min-height: 42vh; max-height: 55vh; display: flex; align-items: center; justify-content: center; background: var(--primary-color); overflow: visible; }
+        .hero img.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.35; }
+        .hero-overlay { position: relative; z-index: 2; text-align: center; color: white; padding: 20px; max-width: 850px; width: 100%; }
+        .hero-overlay h1 { font-size: 3rem; font-weight: 700; margin-bottom: 6px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .hero-overlay p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 20px; font-style: italic; }
+        .search-container { display: flex; background: white; border-radius: 50px; overflow: visible; box-shadow: 0 8px 25px rgba(0,0,0,0.25); max-width: 700px; margin: 0 auto; position: relative; }
+        .search-container input { flex: 1; padding: 14px 22px; border: none; outline: none; font-size: 15px; color: #333; border-radius: 50px 0 0 50px; background: transparent; }
+        .search-container button { background: var(--primary-color); border: none; padding: 0 22px; color: white; font-size: 17px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .search-container button:hover { background: var(--primary-light); }
+        .search-container .filter-btn { background: #e9ecef; color: #333; padding: 0 16px; border-left: 1px solid #ccc; border-radius: 0 50px 50px 0; position: relative; }
+        .search-container .filter-btn:hover { background: #dee2e6; }
 
-        /* ---------- FILTER DROPDOWN ---------- */
-        .filter-dropdown {
-            display: none;
-            position: fixed;
-            top: auto;
-            left: auto;
-            background: white;
-            min-width: 200px;
-            border-radius: 12px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
-            padding: 8px 0;
-            z-index: 99999 !important;
-            color: #333;
-            text-align: left;
-            transform: translateY(8px);
-        }
-        .filter-dropdown.active {
-            display: block;
-        }
-        .filter-dropdown .filter-item {
-            padding: 12px 22px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.15s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .filter-dropdown .filter-item:hover {
-            background: #f1f3f5;
-        }
-        .filter-dropdown .filter-item i {
-            width: 20px;
-            color: var(--primary-color);
-        }
-        .filter-dropdown .filter-item.active-filter {
-            background: #e9ecef;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+        /* FILTER DROPDOWN */
+        .filter-dropdown { display: none; position: fixed; top: auto; left: auto; background: white; min-width: 200px; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.25); padding: 8px 0; z-index: 99999 !important; color: #333; text-align: left; transform: translateY(8px); }
+        .filter-dropdown.active { display: block; }
+        .filter-dropdown .filter-item { padding: 12px 22px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; color: #333; display: flex; align-items: center; gap: 10px; }
+        .filter-dropdown .filter-item:hover { background: #f1f3f5; }
+        .filter-dropdown .filter-item i { width: 20px; color: var(--primary-color); }
+        .filter-dropdown .filter-item.active-filter { background: #e9ecef; font-weight: 700; color: var(--primary-color); }
 
-        /* ---------- RECENT PAPERS FEED ---------- */
-        .feed-section {
-            padding: 40px 30px;
-            background: #f8f9fa;
-            flex: 1;
-        }
-        .feed-section .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .papers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .paper-card {
-            background: white;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 4px solid var(--primary-color);
-        }
-        .paper-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-        .paper-card h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        .paper-card h3 a {
-            text-decoration: none;
-            color: var(--primary-color);
-            transition: color 0.2s;
-        }
-        .paper-card h3 a:hover {
-            color: var(--primary-light);
-            text-decoration: underline;
-        }
-        .paper-card .authors {
-            font-style: italic;
-            color: #495057;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        .paper-card .meta {
-            font-size: 13px;
-            color: #6c757d;
-            margin-bottom: 12px;
-        }
-        .paper-card .card-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border-top: 1px solid #e9ecef;
-            padding-top: 12px;
-            flex-wrap: wrap;
-        }
-        .paper-card .card-actions .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: none;
-            border: none;
-            font-size: 14px;
-            color: #495057;
-            cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 20px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        .paper-card .card-actions .action-btn:hover {
-            background: #f1f3f5;
-        }
-        .paper-card .card-actions .action-btn.liked {
-            color: #dc3545;
-        }
-        .paper-card .card-actions .action-btn.liked i {
-            color: #dc3545;
-        }
-        .paper-card .card-actions .action-btn i {
-            font-size: 16px;
-            color: #6c757d;
-            transition: color 0.2s;
-        }
-        .paper-card .card-actions .action-btn.liked i {
-            color: #dc3545;
-        }
-        .paper-card .card-actions .action-btn .count {
-            font-weight: 600;
-            min-width: 12px;
-        }
-        .paper-card .card-actions .action-btn .download-icon {
-            color: var(--primary-color);
-        }
-        .paper-card .card-actions .action-btn .bookmark-icon {
-            color: #ffc107;
-        }
-        .paper-card .card-actions .action-btn.bookmarked .bookmark-icon {
-            color: #ffc107;
-        }
-        .paper-card .card-actions .action-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .paper-card .software-badge {
-            display: inline-block;
-            background: #e9ecef;
-            color: var(--primary-color);
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 12px;
-            margin-left: 8px;
-        }
-        .no-papers {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 50px 20px;
-            background: white;
-            border-radius: 12px;
-        }
-        .no-papers .icon {
-            font-size: 48px;
-            color: #adb5bd;
-            margin-bottom: 12px;
-        }
-        .no-papers h3 {
-            font-size: 20px;
-            color: #343a40;
-            margin-bottom: 6px;
-        }
-        .no-papers p {
-            color: #6c757d;
-            font-size: 14px;
-        }
+        /* FEED */
+        .feed-section { padding: 40px 30px; background: #f8f9fa; flex: 1; }
+        .feed-section .section-title { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .paper-card { background: white; border-radius: 12px; padding: 22px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; border-left: 4px solid var(--primary-color); }
+        .paper-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .paper-card h3 { font-size: 18px; margin-bottom: 8px; }
+        .paper-card h3 a { text-decoration: none; color: var(--primary-color); transition: color 0.2s; }
+        .paper-card h3 a:hover { color: var(--primary-light); text-decoration: underline; }
+        .paper-card .authors { font-style: italic; color: #495057; font-size: 14px; margin-bottom: 4px; }
+        .paper-card .meta { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+        .paper-card .card-actions { display: flex; align-items: center; gap: 16px; border-top: 1px solid #e9ecef; padding-top: 12px; flex-wrap: wrap; }
+        .paper-card .card-actions .action-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; font-size: 14px; color: #495057; cursor: pointer; padding: 4px 10px; border-radius: 20px; transition: all 0.2s; font-weight: 500; }
+        .paper-card .card-actions .action-btn:hover { background: #f1f3f5; }
+        .paper-card .card-actions .action-btn.liked { color: #dc3545; }
+        .paper-card .card-actions .action-btn.liked i { color: #dc3545; }
+        .paper-card .card-actions .action-btn i { font-size: 16px; color: #6c757d; transition: color 0.2s; }
+        .paper-card .card-actions .action-btn .count { font-weight: 600; min-width: 12px; }
+        .paper-card .card-actions .action-btn .download-icon { color: var(--primary-color); }
+        .paper-card .card-actions .action-btn .bookmark-icon { color: #ffc107; }
+        .paper-card .card-actions .action-btn.bookmarked .bookmark-icon { color: #ffc107; }
+        .paper-card .card-actions .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .paper-card .software-badge { display: inline-block; background: #e9ecef; color: var(--primary-color); font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; margin-left: 8px; }
+        .no-papers { grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: white; border-radius: 12px; }
+        .no-papers .icon { font-size: 48px; color: #adb5bd; margin-bottom: 12px; }
+        .no-papers h3 { font-size: 20px; color: #343a40; margin-bottom: 6px; }
+        .no-papers p { color: #6c757d; font-size: 14px; }
+        .load-more-container { text-align: center; margin-top: 35px; }
+        .load-more-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 14px 40px; border-radius: 50px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow); }
+        .load-more-btn:hover { background: var(--primary-color); color: white; }
+        .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .scroll-top-btn { position: fixed; bottom: 30px; right: 30px; background: var(--primary-color); color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 999; display: none; transition: background 0.2s, transform 0.2s; }
+        .scroll-top-btn:hover { background: var(--primary-light); transform: scale(1.05); }
 
-        .load-more-container {
-            text-align: center;
-            margin-top: 35px;
-        }
-        .load-more-btn {
-            background: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 14px 40px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: var(--shadow);
-        }
-        .load-more-btn:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        .load-more-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        /* WELCOME MODAL */
+        .welcome-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+        .welcome-modal.active { display: flex; }
+        .welcome-modal .modal-box { background: white; max-width: 420px; width: 90%; padding: 40px 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .welcome-modal .modal-box h2 { font-size: 26px; color: var(--primary-color); margin-bottom: 10px; }
+        .welcome-modal .modal-box p { color: #495057; margin-bottom: 25px; line-height: 1.6; }
+        .welcome-modal .modal-box .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        .welcome-modal .modal-box .btn-primary { background: var(--primary-color); color: white; border: none; padding: 14px; border-radius: 50px; font-weight: 600; font-size: 16px; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+        .welcome-modal .modal-box .btn-primary:hover { background: var(--primary-light); }
+        .welcome-modal .modal-box .btn-secondary { background: transparent; color: #495057; border: 2px solid #dee2e6; padding: 12px; border-radius: 50px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .welcome-modal .modal-box .btn-secondary:hover { background: #f1f3f5; }
 
-        .scroll-top-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 55px;
-            height: 55px;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-            z-index: 999;
-            display: none;
-            transition: background 0.2s, transform 0.2s;
-        }
-        .scroll-top-btn:hover {
-            background: var(--primary-light);
-            transform: scale(1.05);
-        }
+        /* CUSTOM CONFIRM */
+        .custom-confirm-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; align-items: center; justify-content: center; }
+        .custom-confirm-overlay.active { display: flex; }
+        .custom-confirm-box { background: white; max-width: 400px; width: 90%; padding: 35px 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s ease; }
+        .custom-confirm-box .icon { font-size: 48px; color: #dc3545; margin-bottom: 15px; }
+        .custom-confirm-box h3 { font-size: 20px; color: #1a1a1a; margin-bottom: 8px; }
+        .custom-confirm-box p { color: #495057; font-size: 15px; margin-bottom: 25px; line-height: 1.5; }
+        .custom-confirm-box .btn-group { display: flex; gap: 12px; justify-content: center; }
+        .custom-confirm-box .btn-group button { padding: 12px 30px; border: none; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .custom-confirm-box .btn-group .btn-cancel { background: #e9ecef; color: #495057; }
+        .custom-confirm-box .btn-group .btn-cancel:hover { background: #dee2e6; }
+        .custom-confirm-box .btn-group .btn-danger { background: #dc3545; color: white; }
+        .custom-confirm-box .btn-group .btn-danger:hover { background: #c82333; }
 
-        /* ---------- WELCOME MODAL ---------- */
-        .welcome-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-        .welcome-modal.active {
-            display: flex;
-        }
-        .welcome-modal .modal-box {
-            background: white;
-            max-width: 420px;
-            width: 90%;
-            padding: 40px 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: popIn 0.3s ease;
-        }
-        @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .welcome-modal .modal-box h2 {
-            font-size: 26px;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        .welcome-modal .modal-box p {
-            color: #495057;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        .welcome-modal .modal-box .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .welcome-modal .modal-box .btn-primary {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-        .welcome-modal .modal-box .btn-primary:hover {
-            background: var(--primary-light);
-        }
-        .welcome-modal .modal-box .btn-secondary {
-            background: transparent;
-            color: #495057;
-            border: 2px solid #dee2e6;
-            padding: 12px;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .welcome-modal .modal-box .btn-secondary:hover {
-            background: #f1f3f5;
-        }
+        /* TOAST */
+        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 14px 32px; border-radius: 12px; font-weight: 600; z-index: 99999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-size: 16px; animation: popIn 0.3s ease; display: none; }
+        .toast-notification.show { display: block; }
+        .toast-notification.error { background: #dc3545; }
+        .toast-notification.info { background: #0d6efd; }
 
-        /* ---------- CUSTOM CONFIRM MODAL ---------- */
-        .custom-confirm-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 99999;
-            align-items: center;
-            justify-content: center;
-        }
-        .custom-confirm-overlay.active {
-            display: flex;
-        }
-        .custom-confirm-box {
-            background: white;
-            max-width: 400px;
-            width: 90%;
-            padding: 35px 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: popIn 0.3s ease;
-        }
-        .custom-confirm-box .icon {
-            font-size: 48px;
-            color: #dc3545;
-            margin-bottom: 15px;
-        }
-        .custom-confirm-box h3 {
-            font-size: 20px;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-        .custom-confirm-box p {
-            color: #495057;
-            font-size: 15px;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-        .custom-confirm-box .btn-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-        .custom-confirm-box .btn-group button {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .custom-confirm-box .btn-group .btn-cancel {
-            background: #e9ecef;
-            color: #495057;
-        }
-        .custom-confirm-box .btn-group .btn-cancel:hover {
-            background: #dee2e6;
-        }
-        .custom-confirm-box .btn-group .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-        .custom-confirm-box .btn-group .btn-danger:hover {
-            background: #c82333;
-        }
-
-        /* ---------- TOAST ---------- */
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #28a745;
-            color: white;
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            z-index: 99999;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            font-size: 16px;
-            animation: popIn 0.3s ease;
-            display: none;
-        }
-        .toast-notification.show {
-            display: block;
-        }
-        .toast-notification.error {
-            background: #dc3545;
-        }
-        .toast-notification.info {
-            background: #0d6efd;
-        }
-
-        /* ---------- RESPONSIVE ---------- */
+        /* RESPONSIVE */
         @media (max-width: 1023px) and (min-width: 768px) {
-            .sidebar {
-                width: var(--sidebar-collapsed);
-                padding: 15px 0;
-            }
+            .sidebar { width: var(--sidebar-collapsed); padding: 15px 0; }
             .sidebar .sidebar-logo img { max-height: 35px; }
             .sidebar .sidebar-logo .site-name { display: none; }
             .sidebar .sidebar-user .user-info { display: none; }
@@ -723,84 +159,27 @@
             .main-content { margin-left: var(--sidebar-collapsed); }
             .hero { min-height: 35vh; max-height: 45vh; }
         }
-
         @media (max-width: 767px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .mobile-header {
-                display: flex;
-            }
-            .hero {
-                min-height: 40vh;
-                max-height: 50vh;
-            }
-            .hero-overlay h1 {
-                font-size: 1.8rem;
-            }
-            .hero-overlay p {
-                font-size: 0.9rem;
-                margin-bottom: 15px;
-            }
-            .search-container input {
-                padding: 12px 14px;
-                font-size: 14px;
-            }
-            .search-container button {
-                padding: 0 14px;
-                font-size: 15px;
-            }
-            .search-container .filter-btn {
-                padding: 0 12px;
-            }
-            .filter-dropdown {
-                min-width: 160px;
-                right: 10px;
-                left: auto !important;
-            }
-            .feed-section {
-                padding: 20px 16px;
-            }
-            .papers-grid {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-            .paper-card .card-actions {
-                gap: 8px;
-            }
-            .paper-card .card-actions .action-btn {
-                font-size: 13px;
-                padding: 4px 8px;
-            }
-            .scroll-top-btn {
-                bottom: 20px;
-                right: 20px;
-                width: 48px;
-                height: 48px;
-                font-size: 20px;
-            }
-            .custom-confirm-box {
-                padding: 25px 20px;
-            }
-            .custom-confirm-box .btn-group {
-                flex-direction: column;
-            }
-            .toast-notification {
-                bottom: 20px;
-                padding: 12px 20px;
-                font-size: 14px;
-                width: 90%;
-                text-align: center;
-            }
+            .sidebar { transform: translateX(-100%); width: 280px; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .mobile-header { display: flex; }
+            .hero { min-height: 40vh; max-height: 50vh; }
+            .hero-overlay h1 { font-size: 1.8rem; }
+            .hero-overlay p { font-size: 0.9rem; margin-bottom: 15px; }
+            .search-container input { padding: 12px 14px; font-size: 14px; }
+            .search-container button { padding: 0 14px; font-size: 15px; }
+            .search-container .filter-btn { padding: 0 12px; }
+            .filter-dropdown { min-width: 160px; right: 10px; left: auto !important; }
+            .feed-section { padding: 20px 16px; }
+            .papers-grid { grid-template-columns: 1fr; gap: 18px; }
+            .paper-card .card-actions { gap: 8px; }
+            .paper-card .card-actions .action-btn { font-size: 13px; padding: 4px 8px; }
+            .scroll-top-btn { bottom: 20px; right: 20px; width: 48px; height: 48px; font-size: 20px; }
+            .custom-confirm-box { padding: 25px 20px; }
+            .custom-confirm-box .btn-group { flex-direction: column; }
+            .toast-notification { bottom: 20px; padding: 12px 20px; font-size: 14px; width: 90%; text-align: center; }
         }
-
         @media (min-width: 1024px) {
             .drawer-overlay { display: none !important; }
             .mobile-header { display: none !important; }
@@ -827,6 +206,7 @@
             <a href="profile.html" id="profileLink" class="hidden-tab"><i class="fas fa-user"></i><span>My Profile</span></a>
             <a href="library.html" id="libraryLink" class="hidden-tab"><i class="fas fa-bookmark"></i><span>My Library</span></a>
             <a href="upload.html" id="uploadLink" class="hidden-tab"><i class="fas fa-upload"></i><span>Upload</span></a>
+            <a href="ai/ai.html"><i class="fas fa-headset"></i><span>AI Assistant</span></a>
             <a href="about.html"><i class="fas fa-info-circle"></i><span>About</span></a>
             <a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a>
             <a href="support.html"><i class="fas fa-question-circle"></i><span>Support</span></a>
@@ -843,14 +223,11 @@
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-
-        <!-- MOBILE HEADER -->
         <header class="mobile-header">
             <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
             <div class="mobile-logo"><img src="logo.png" alt="UMYU Scholar"></div>
         </header>
 
-        <!-- HERO SECTION -->
         <section class="hero" id="heroSection">
             <img src="hero-bg.jpg" alt="UMYU Campus" class="hero-bg">
             <div class="hero-overlay">
@@ -859,14 +236,11 @@
                 <div class="search-container">
                     <input type="text" id="searchInput" placeholder="Search by title, author, or department...">
                     <button id="searchBtn"><i class="fas fa-search"></i></button>
-                    <button class="filter-btn" id="filterBtn">
-                        <i class="fas fa-sliders-h"></i>
-                    </button>
+                    <button class="filter-btn" id="filterBtn"><i class="fas fa-sliders-h"></i></button>
                 </div>
             </div>
         </section>
 
-        <!-- RECENT PAPERS FEED -->
         <section class="feed-section">
             <div class="section-title">
                 <span><i class="fas fa-clock" style="color: var(--primary-color);"></i> Latest Uploads</span>
@@ -883,10 +257,8 @@
                 <button class="load-more-btn" id="loadMoreBtn">Load More <i class="fas fa-arrow-down"></i></button>
             </div>
         </section>
-
     </main>
 
-    <!-- SCROLL TO TOP -->
     <button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
     <!-- WELCOME MODAL -->
@@ -901,7 +273,7 @@
         </div>
     </div>
 
-    <!-- CUSTOM CONFIRM MODAL -->
+    <!-- CUSTOM CONFIRM -->
     <div class="custom-confirm-overlay" id="customConfirmOverlay">
         <div class="custom-confirm-box">
             <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
@@ -914,18 +286,19 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
+    <!-- TOAST -->
     <div class="toast-notification" id="toastNotification"></div>
 
     <!-- FILTER DROPDOWN -->
     <div class="filter-dropdown" id="filterDropdown"></div>
 
     <script type="module">
-        // ----- IMPORTS -----
+        // ----- IMPORTS (FIXED: added deleteDoc, setDoc) -----
         import { 
             db, auth, 
             collection, query, orderBy, limit, startAfter, getDocs, where, 
             doc, updateDoc, arrayUnion, arrayRemove, increment, getDoc,
+            deleteDoc, setDoc,
             onAuthStateChanged, signOut 
         } from './js/firebase-config.js';
 
@@ -974,21 +347,18 @@
         let likedPapers = new Set();
         let bookmarkedPapers = new Set();
 
-        // ----- HELPER: Check UMYU Email -----
+        // ----- HELPERS -----
         function isUmyuEmail(email) {
             if (!email) return false;
             const lowerEmail = email.toLowerCase().trim();
             return lowerEmail.endsWith('@umyu.edu.ng') || lowerEmail.endsWith('@students.umyu.edu.ng');
         }
 
-        // ----- HELPER: Get clean display name (remove role) -----
         function getCleanDisplayName(displayName) {
             if (!displayName) return 'Guest';
-            // Remove anything in parentheses like "(Student)" or "(Staff)"
             return displayName.replace(/\s*\([^)]*\)\s*/g, '').trim();
         }
 
-        // ----- TOAST -----
         function showToast(message, type = 'success', duration = 3000) {
             toastNotification.textContent = message;
             toastNotification.className = 'toast-notification show ' + type;
@@ -998,13 +368,11 @@
             }, duration);
         }
 
-        // ----- 1. GENERATE FILTER OPTIONS -----
+        // ----- 1. FILTER OPTIONS -----
         function generateYearFilters() {
             const currentYear = new Date().getFullYear();
             const years = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-            
-            let html = '';
-            html += `<button class="filter-item active-filter" data-filter="all"><i class="fas fa-globe"></i> All Time</button>`;
+            let html = `<button class="filter-item active-filter" data-filter="all"><i class="fas fa-globe"></i> All Time</button>`;
             years.forEach(year => {
                 html += `<button class="filter-item" data-filter="${year}"><i class="fas fa-calendar-alt"></i> ${year}</button>`;
             });
@@ -1013,8 +381,7 @@
             document.querySelectorAll('.filter-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const filter = item.dataset.filter;
-                    currentFilter = filter;
+                    currentFilter = item.dataset.filter;
                     document.querySelectorAll('.filter-item').forEach(f => f.classList.remove('active-filter'));
                     item.classList.add('active-filter');
                     filterDropdown.classList.remove('active');
@@ -1057,19 +424,14 @@
             filterDropdown.style.left = (rect.right - 200) + 'px';
             filterDropdown.classList.toggle('active');
         });
-
-        document.addEventListener('click', () => {
-            filterDropdown.classList.remove('active');
-        });
-        filterDropdown.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
+        document.addEventListener('click', () => filterDropdown.classList.remove('active'));
+        filterDropdown.addEventListener('click', (e) => e.stopPropagation());
 
         // ----- 4. SEARCH -----
         function performSearch() {
-            const query = searchInput.value.trim().toLowerCase();
-            searchQuery = query;
-            if (!query) {
+            const q = searchInput.value.trim().toLowerCase();
+            searchQuery = q;
+            if (!q) {
                 isSearchActive = false;
                 renderPapers(allLoadedPapers);
                 updateResultCount(allLoadedPapers.length);
@@ -1077,11 +439,11 @@
             }
             isSearchActive = true;
             const filtered = allLoadedPapers.filter(item => {
-                const data = item.data;
-                const title = (data.title || '').toLowerCase();
-                const authors = (data.authors || []).join(' ').toLowerCase();
-                const dept = (data.department || '').toLowerCase();
-                return title.includes(query) || authors.includes(query) || dept.includes(query);
+                const d = item.data;
+                const title = (d.title || '').toLowerCase();
+                const authors = (d.authors || []).join(' ').toLowerCase();
+                const dept = (d.department || '').toLowerCase();
+                return title.includes(q) || authors.includes(q) || dept.includes(q);
             });
             renderPapers(filtered);
             updateResultCount(filtered.length);
@@ -1090,16 +452,13 @@
                     <div class="no-papers">
                         <div class="icon"><i class="fas fa-search"></i></div>
                         <h3>No results found</h3>
-                        <p>We couldn't find any papers matching "<strong>${query}</strong>". Try a different keyword.</p>
+                        <p>We couldn't find any papers matching "<strong>${q}</strong>". Try a different keyword.</p>
                     </div>
                 `;
             }
         }
-
         searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') performSearch();
-        });
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(); });
 
         // ----- 5. RENDER PAPERS -----
         function renderPapers(papersArray) {
@@ -1154,87 +513,44 @@
                 `;
             });
             papersGrid.innerHTML = html;
-
-            // Attach event listeners to action buttons
             attachActionListeners();
         }
 
-        // ----- 6. ATTACH ACTION LISTENERS -----
+        // ----- 6. ATTACH LISTENERS -----
         function attachActionListeners() {
-            // Like buttons
             document.querySelectorAll('.like-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    const paperId = btn.dataset.paperId;
-                    await handleLike(paperId, btn);
-                });
+                btn.addEventListener('click', async (e) => { e.stopPropagation(); await handleLike(btn.dataset.paperId, btn); });
             });
-
-            // Download buttons
             document.querySelectorAll('.download-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    const paperId = btn.dataset.paperId;
-                    const url = btn.dataset.url;
-                    await handleDownload(paperId, url, btn);
-                });
+                btn.addEventListener('click', async (e) => { e.stopPropagation(); await handleDownload(btn.dataset.paperId, btn.dataset.url, btn); });
             });
-
-            // Bookmark buttons
             document.querySelectorAll('.bookmark-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    const paperId = btn.dataset.paperId;
-                    await handleBookmark(paperId, btn);
-                });
+                btn.addEventListener('click', async (e) => { e.stopPropagation(); await handleBookmark(btn.dataset.paperId, btn); });
             });
         }
 
-        // ----- 7. LIKE HANDLER -----
+        // ----- 7. LIKE -----
         async function handleLike(paperId, btn) {
-            if (!currentUser) {
-                showToast('Please sign in to like papers.', 'info', 3000);
-                return;
-            }
-
+            if (!currentUser) { showToast('Please sign in to like papers.', 'info', 3000); return; }
             try {
                 const paperRef = doc(db, 'papers', paperId);
                 const paperDoc = await getDoc(paperRef);
-                
-                if (!paperDoc.exists()) {
-                    showToast('Paper not found.', 'error', 3000);
-                    return;
-                }
-
+                if (!paperDoc.exists()) { showToast('Paper not found.', 'error', 3000); return; }
                 const data = paperDoc.data();
                 const likedBy = data.likedBy || [];
                 const isLiked = likedBy.includes(currentUser.uid);
 
                 if (isLiked) {
-                    // Unlike
-                    await updateDoc(paperRef, {
-                        likedBy: arrayRemove(currentUser.uid),
-                        likesCount: increment(-1)
-                    });
+                    await updateDoc(paperRef, { likedBy: arrayRemove(currentUser.uid), likesCount: increment(-1) });
                     btn.classList.remove('liked');
-                    const countSpan = btn.querySelector('.count');
-                    if (countSpan) {
-                        const currentCount = parseInt(countSpan.textContent) || 0;
-                        countSpan.textContent = currentCount - 1;
-                    }
+                    const c = btn.querySelector('.count');
+                    if (c) c.textContent = (parseInt(c.textContent) || 0) - 1;
                     likedPapers.delete(paperId);
                 } else {
-                    // Like
-                    await updateDoc(paperRef, {
-                        likedBy: arrayUnion(currentUser.uid),
-                        likesCount: increment(1)
-                    });
+                    await updateDoc(paperRef, { likedBy: arrayUnion(currentUser.uid), likesCount: increment(1) });
                     btn.classList.add('liked');
-                    const countSpan = btn.querySelector('.count');
-                    if (countSpan) {
-                        const currentCount = parseInt(countSpan.textContent) || 0;
-                        countSpan.textContent = currentCount + 1;
-                    }
+                    const c = btn.querySelector('.count');
+                    if (c) c.textContent = (parseInt(c.textContent) || 0) + 1;
                     likedPapers.add(paperId);
                 }
             } catch (error) {
@@ -1243,62 +559,34 @@
             }
         }
 
-        // ----- 8. DOWNLOAD HANDLER -----
+        // ----- 8. DOWNLOAD -----
         async function handleDownload(paperId, url, btn) {
-            if (!url) {
-                showToast('Download link not available.', 'error', 3000);
-                return;
-            }
-
+            if (!url) { showToast('Download link not available.', 'error', 3000); return; }
             try {
-                // Update download count
-                const paperRef = doc(db, 'papers', paperId);
-                await updateDoc(paperRef, {
-                    downloads: increment(1)
-                });
-
-                // Update UI count
-                const countSpan = btn.querySelector('.count');
-                if (countSpan) {
-                    const currentCount = parseInt(countSpan.textContent) || 0;
-                    countSpan.textContent = currentCount + 1;
-                }
-
-                // Open the PDF in a new tab
+                await updateDoc(doc(db, 'papers', paperId), { downloads: increment(1) });
+                const c = btn.querySelector('.count');
+                if (c) c.textContent = (parseInt(c.textContent) || 0) + 1;
                 window.open(url, '_blank');
                 showToast('Downloading paper...', 'success', 2000);
-
             } catch (error) {
                 console.error('Download error:', error);
-                // Still open the PDF even if count update fails
                 window.open(url, '_blank');
             }
         }
 
-        // ----- 9. BOOKMARK HANDLER -----
+        // ----- 9. BOOKMARK -----
         async function handleBookmark(paperId, btn) {
-            if (!currentUser) {
-                showToast('Please sign in to bookmark papers.', 'info', 3000);
-                return;
-            }
-
+            if (!currentUser) { showToast('Please sign in to bookmark papers.', 'info', 3000); return; }
             try {
                 const bookmarkRef = doc(db, 'users', currentUser.uid, 'bookmarks', paperId);
                 const bookmarkDoc = await getDoc(bookmarkRef);
-                const isBookmarked = bookmarkDoc.exists();
-
-                if (isBookmarked) {
-                    // Remove bookmark
+                if (bookmarkDoc.exists()) {
                     await deleteDoc(bookmarkRef);
                     btn.classList.remove('bookmarked');
                     bookmarkedPapers.delete(paperId);
                     showToast('Bookmark removed.', 'info', 2000);
                 } else {
-                    // Add bookmark
-                    await setDoc(bookmarkRef, {
-                        paperId: paperId,
-                        savedAt: new Date().toISOString()
-                    });
+                    await setDoc(bookmarkRef, { paperId: paperId, savedAt: new Date().toISOString() });
                     btn.classList.add('bookmarked');
                     bookmarkedPapers.add(paperId);
                     showToast('Paper bookmarked!', 'success', 2000);
@@ -1309,35 +597,24 @@
             }
         }
 
-        // ----- 10. LOAD BOOKMARKS & LIKES -----
+        // ----- 10. LOAD USER INTERACTIONS -----
         async function loadUserInteractions() {
             if (!currentUser) return;
-
-            // Load bookmarks
             try {
                 const bookmarksRef = collection(db, 'users', currentUser.uid, 'bookmarks');
                 const bookmarksSnap = await getDocs(bookmarksRef);
                 bookmarkedPapers.clear();
-                bookmarksSnap.forEach(doc => {
-                    bookmarkedPapers.add(doc.id);
-                });
+                bookmarksSnap.forEach(doc => bookmarkedPapers.add(doc.id));
             } catch (error) {
                 console.error('Error loading bookmarks:', error);
             }
-
-            // Load liked papers from the displayed papers
-            // We'll check each paper's likedBy array when rendering
-            // For now, we'll just rely on the data from the paper documents
-            // The liked state will be determined by checking if currentUser.uid is in likedBy
         }
 
         // ----- 11. LOAD PAPERS -----
         async function loadPapers(reset = true) {
             if (isLoading) return;
             if (reset) {
-                lastDoc = null;
-                hasMore = true;
-                allLoadedPapers = [];
+                lastDoc = null; hasMore = true; allLoadedPapers = [];
                 papersGrid.innerHTML = `
                     <div class="no-papers">
                         <div class="icon"><i class="fas fa-spinner fa-pulse"></i></div>
@@ -1356,35 +633,23 @@
                 loadMoreBtn.innerHTML = 'No more papers';
                 return;
             }
-
             isLoading = true;
             loadMoreBtn.disabled = true;
             loadMoreBtn.innerHTML = 'Loading...';
-
             try {
                 const papersRef = collection(db, 'papers');
                 let constraints = [orderBy('timestamp', 'desc')];
-
                 if (currentFilter !== 'all') {
                     const yearNum = parseInt(currentFilter);
-                    if (!isNaN(yearNum)) {
-                        constraints.push(where('year', '==', yearNum));
-                    }
+                    if (!isNaN(yearNum)) constraints.push(where('year', '==', yearNum));
                 }
-
-                if (lastDoc) {
-                    constraints.push(startAfter(lastDoc));
-                }
-
+                if (lastDoc) constraints.push(startAfter(lastDoc));
                 constraints.push(limit(PAGE_SIZE));
 
                 const q = query(papersRef, ...constraints);
-                const querySnapshot = await getDocs(q);
-
-                const docs = querySnapshot.docs;
-                if (docs.length > 0) {
-                    lastDoc = docs[docs.length - 1];
-                }
+                const snap = await getDocs(q);
+                const docs = snap.docs;
+                if (docs.length > 0) lastDoc = docs[docs.length - 1];
 
                 if (docs.length < PAGE_SIZE) {
                     hasMore = false;
@@ -1410,48 +675,31 @@
                 }
 
                 const newPapers = docs.map(doc => ({ id: doc.id, data: doc.data() }));
-                if (reset) {
-                    allLoadedPapers = newPapers;
-                } else {
-                    allLoadedPapers = [...allLoadedPapers, ...newPapers];
-                }
+                if (reset) allLoadedPapers = newPapers;
+                else allLoadedPapers = [...allLoadedPapers, ...newPapers];
 
-                // Update liked status for current user
                 if (currentUser) {
                     allLoadedPapers.forEach(({ id, data }) => {
                         const likedBy = data.likedBy || [];
-                        if (likedBy.includes(currentUser.uid)) {
-                            likedPapers.add(id);
-                        } else {
-                            likedPapers.delete(id);
-                        }
+                        if (likedBy.includes(currentUser.uid)) likedPapers.add(id);
+                        else likedPapers.delete(id);
                     });
                 }
 
                 if (isSearchActive && searchQuery) {
                     const filtered = allLoadedPapers.filter(item => {
-                        const data = item.data;
-                        const title = (data.title || '').toLowerCase();
-                        const authors = (data.authors || []).join(' ').toLowerCase();
-                        const dept = (data.department || '').toLowerCase();
+                        const d = item.data;
+                        const title = (d.title || '').toLowerCase();
+                        const authors = (d.authors || []).join(' ').toLowerCase();
+                        const dept = (d.department || '').toLowerCase();
                         return title.includes(searchQuery) || authors.includes(searchQuery) || dept.includes(searchQuery);
                     });
                     renderPapers(filtered);
                     updateResultCount(filtered.length);
-                    if (filtered.length === 0) {
-                        papersGrid.innerHTML = `
-                            <div class="no-papers">
-                                <div class="icon"><i class="fas fa-search"></i></div>
-                                <h3>No results found</h3>
-                                <p>We couldn't find any papers matching "<strong>${searchQuery}</strong>". Try a different keyword.</p>
-                            </div>
-                        `;
-                    }
                 } else {
                     renderPapers(allLoadedPapers);
                     updateResultCount(allLoadedPapers.length);
                 }
-
             } catch (error) {
                 console.error('Error loading papers:', error);
                 if (reset) {
@@ -1459,7 +707,7 @@
                         <div class="no-papers">
                             <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
                             <h3>Unable to load papers</h3>
-                            <p>We're having trouble connecting to the server. Please refresh the page or try again later.</p>
+                            <p>We're having trouble connecting. Please refresh or try again later.</p>
                         </div>
                     `;
                 }
@@ -1467,11 +715,8 @@
                 loadMoreBtn.innerHTML = 'Retry <i class="fas fa-redo"></i>';
             } finally {
                 isLoading = false;
-                if (papersGrid.querySelector('.no-papers')) {
-                    loadMoreContainer.style.display = 'none';
-                } else {
-                    loadMoreContainer.style.display = 'block';
-                }
+                if (papersGrid.querySelector('.no-papers')) loadMoreContainer.style.display = 'none';
+                else loadMoreContainer.style.display = 'block';
                 if (!hasMore && !reset) {
                     loadMoreContainer.style.display = 'block';
                     loadMoreBtn.disabled = true;
@@ -1480,39 +725,30 @@
             }
         }
 
-        // ----- 12. UPDATE RESULT COUNT -----
         function updateResultCount(count) {
             resultCount.textContent = `${count} paper${count > 1 ? 's' : ''}`;
         }
 
-        loadMoreBtn.addEventListener('click', () => {
-            if (!isLoading && hasMore) {
-                loadPapers(false);
-            }
-        });
+        loadMoreBtn.addEventListener('click', () => { if (!isLoading && hasMore) loadPapers(false); });
 
-        // ----- 13. CUSTOM CONFIRM -----
+        // ----- 12. CUSTOM CONFIRM -----
         function showConfirm(title, message, onConfirm) {
             confirmTitle.textContent = title;
             confirmMessage.textContent = message;
             confirmOverlay.classList.add('active');
-            
             const handleConfirm = () => {
                 confirmOverlay.classList.remove('active');
                 confirmOk.removeEventListener('click', handleConfirm);
                 confirmCancel.removeEventListener('click', handleCancel);
                 onConfirm();
             };
-            
             const handleCancel = () => {
                 confirmOverlay.classList.remove('active');
                 confirmOk.removeEventListener('click', handleConfirm);
                 confirmCancel.removeEventListener('click', handleCancel);
             };
-            
             confirmOk.addEventListener('click', handleConfirm);
             confirmCancel.addEventListener('click', handleCancel);
-            
             confirmOverlay.addEventListener('click', (e) => {
                 if (e.target === confirmOverlay) {
                     confirmOverlay.classList.remove('active');
@@ -1522,26 +758,21 @@
             });
         }
 
-        // ----- 14. LOGOUT -----
+        // ----- 13. LOGOUT -----
         logoutBtn.addEventListener('click', () => {
-            showConfirm(
-                'Logout Confirmation',
-                'Are you sure you want to logout? You will need to sign in again to upload or like papers.',
+            showConfirm('Logout Confirmation', 'Are you sure you want to logout? You will need to sign in again to upload or like papers.',
                 async () => {
                     try {
                         await signOut(auth);
                         showToast('✅ Logged out successfully!', 'success', 3000);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 500);
+                        setTimeout(() => window.location.reload(), 500);
                     } catch (error) {
                         showToast('❌ Logout failed. Please try again.', 'error', 3000);
                     }
-                }
-            );
+                });
         });
 
-        // ----- 15. AUTH STATE -----
+        // ----- 14. AUTH STATE -----
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
@@ -1550,37 +781,30 @@
                 userDisplayName.textContent = cleanName;
                 userDisplayEmail.textContent = user.email;
 
-                if (user.photoURL) {
-                    userAvatar.src = user.photoURL;
-                } else {
-                    userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=1a7a3c&color=fff&size=48`;
-                }
+                if (user.photoURL) userAvatar.src = user.photoURL;
+                else userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=1a7a3c&color=fff&size=48`;
 
                 logoutBtn.style.display = 'block';
                 profileLink.classList.remove('hidden-tab');
                 libraryLink.classList.remove('hidden-tab');
-                
-                if (isUmyuEmail(user.email)) {
-                    uploadLink.classList.remove('hidden-tab');
-                } else {
-                    uploadLink.classList.add('hidden-tab');
-                }
+
+                if (isUmyuEmail(user.email)) uploadLink.classList.remove('hidden-tab');
+                else uploadLink.classList.add('hidden-tab');
 
                 sidebarUser.removeAttribute('href');
                 sidebarUser.style.cursor = 'default';
                 welcomeModal.classList.remove('active');
-                localStorage.setItem('umyuScholar_visited', 'true');
 
-                // Load user's interactions
+                // Set both storages so popup never appears
+                try {
+                    localStorage.setItem('umyuScholar_visited', 'true');
+                    sessionStorage.setItem('umyuScholar_visited', 'true');
+                } catch (e) { /* ignore */ }
+
                 await loadUserInteractions();
-                // Re-render to reflect likes/bookmarks
-                if (allLoadedPapers.length > 0) {
-                    renderPapers(allLoadedPapers);
-                }
-
+                if (allLoadedPapers.length > 0) renderPapers(allLoadedPapers);
             } else {
-                const cleanName = 'Guest';
-                userDisplayName.textContent = cleanName;
+                userDisplayName.textContent = 'Guest';
                 userDisplayEmail.textContent = 'Not signed in';
                 userAvatar.src = 'https://ui-avatars.com/api/?name=Guest&background=1a7a3c&color=fff&size=48';
 
@@ -1591,51 +815,67 @@
 
                 sidebarUser.href = 'auth.html';
                 sidebarUser.style.cursor = 'pointer';
-                
-                // Clear interaction sets
+
                 likedPapers.clear();
                 bookmarkedPapers.clear();
-                
+
                 checkFirstVisit();
             }
         });
 
-        // ----- 16. FIRST VISIT -----
+        // ----- 15. FIRST VISIT (FIXED: uses both storages) -----
         function checkFirstVisit() {
             if (currentUser) return;
-            const hasVisited = localStorage.getItem('umyuScholar_visited');
+
+            // Check BOTH localStorage AND sessionStorage
+            let hasVisited = false;
+            try {
+                hasVisited = localStorage.getItem('umyuScholar_visited') === 'true'
+                          || sessionStorage.getItem('umyuScholar_visited') === 'true';
+            } catch (e) {
+                hasVisited = false;
+            }
+
             if (!hasVisited) {
                 welcomeModal.classList.add('active');
             } else {
                 welcomeModal.classList.remove('active');
             }
         }
+
         continueGuestBtn.addEventListener('click', () => {
-            localStorage.setItem('umyuScholar_visited', 'true');
+            try {
+                localStorage.setItem('umyuScholar_visited', 'true');
+                sessionStorage.setItem('umyuScholar_visited', 'true');
+            } catch (e) { /* ignore */ }
             welcomeModal.classList.remove('active');
         });
 
-        // ----- 17. SCROLL TO TOP -----
+        // Also set storage when user clicks the "Sign Up" button (they saw the modal)
+        document.querySelector('.welcome-modal .btn-primary').addEventListener('click', () => {
+            try {
+                localStorage.setItem('umyuScholar_visited', 'true');
+                sessionStorage.setItem('umyuScholar_visited', 'true');
+            } catch (e) { /* ignore */ }
+        });
+
+        // ----- 16. SCROLL TO TOP -----
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                scrollTopBtn.style.display = 'block';
-            } else {
-                scrollTopBtn.style.display = 'none';
-            }
+            scrollTopBtn.style.display = window.scrollY > 400 ? 'block' : 'none';
         });
         scrollTopBtn.addEventListener('click', () => {
             document.getElementById('heroSection').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // ----- 18. INIT -----
+        // ----- 17. INIT -----
         loadPapers(true);
+
+        // Run first-visit check after a delay to let auth resolve
         setTimeout(() => {
             if (!currentUser) checkFirstVisit();
-        }, 500);
+        }, 800);
 
-        console.log('✅ UMYU Scholar Homepage (v6 - Green Theme + Interactions) loaded!');
-        console.log('ℹ️ Supports: @umyu.edu.ng (Staff) and @students.umyu.edu.ng (Students)');
-        console.log('ℹ️ Like, Download, and Bookmark now work directly on the homepage!');
+        console.log('✅ UMYU Scholar Homepage (v7 - Fixed popup + AI link) loaded!');
     </script>
 </body>
 </html>
